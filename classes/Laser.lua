@@ -62,8 +62,10 @@ function Laser:calculateBeamPath(mirrors)
 
         -- Add current segment
         table_insert(segments, {
-            startX = x, startY = y,
-            endX = nextX, endY = nextY,
+            startX = x,
+            startY = y,
+            endX = nextX,
+            endY = nextY,
             dir = dir
         })
 
@@ -77,15 +79,25 @@ function Laser:calculateBeamPath(mirrors)
         if mirror then
             -- Change direction based on mirror type
             if mirror.angle == 0 then -- 45° mirror (\)
-                if dir == "right" then dir = "down"
-                elseif dir == "left" then dir = "up"
-                elseif dir == "up" then dir = "left"
-                elseif dir == "down" then dir = "right" end
+                if dir == "right" then
+                    dir = "down"
+                elseif dir == "left" then
+                    dir = "up"
+                elseif dir == "up" then
+                    dir = "left"
+                elseif dir == "down" then
+                    dir = "right"
+                end
             else -- 135° mirror (/)
-                if dir == "right" then dir = "up"
-                elseif dir == "left" then dir = "down"
-                elseif dir == "up" then dir = "right"
-                elseif dir == "down" then dir = "left" end
+                if dir == "right" then
+                    dir = "up"
+                elseif dir == "left" then
+                    dir = "down"
+                elseif dir == "up" then
+                    dir = "right"
+                elseif dir == "down" then
+                    dir = "left"
+                end
             end
         end
 

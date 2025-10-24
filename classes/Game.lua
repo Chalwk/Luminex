@@ -35,7 +35,6 @@ function Game.new()
     instance.particles = {}
     instance.effects = {}
 
-    local laser = love.audio.newSource("assets/sounds/laser.mp3", "static")
     local win = love.audio.newSource("assets/sounds/win.mp3", "static")
     local rotate = love.audio.newSource("assets/sounds/rotate.mp3", "static")
 
@@ -49,11 +48,6 @@ function Game.new()
         rotate = {
             play = function()
                 love.audio.play(rotate)
-            end
-        },
-        laser = {
-            play = function()
-                love.audio.play(laser)
             end
         }
     }

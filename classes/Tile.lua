@@ -18,7 +18,7 @@ function Tile.new(x, y, tileType, rotation)
     instance.x = x
     instance.y = y
     instance.type = tileType or "empty"
-    instance.rotation = rotation or 0  -- 0, 1, 2, 3 for 0°, 90°, 180°, 270°
+    instance.rotation = rotation or 0 -- 0, 1, 2, 3 for 0°, 90°, 180°, 270°
     instance.powered = false
 
     return instance
@@ -43,46 +43,46 @@ function Tile:getConnections()
 
     if self.type == "straight" then
         if self.rotation % 2 == 0 then
-            connections = {"up", "down"}  -- Vertical
+            connections = { "up", "down" }  -- Vertical
         else
-            connections = {"left", "right"}  -- Horizontal
+            connections = { "left", "right" } -- Horizontal
         end
     elseif self.type == "corner" then
         if self.rotation == 0 then
-            connections = {"up", "right"}
+            connections = { "up", "right" }
         elseif self.rotation == 1 then
-            connections = {"right", "down"}
+            connections = { "right", "down" }
         elseif self.rotation == 2 then
-            connections = {"down", "left"}
+            connections = { "down", "left" }
         else
-            connections = {"left", "up"}
+            connections = { "left", "up" }
         end
     elseif self.type == "t_junction" then
         if self.rotation == 0 then
-            connections = {"up", "right", "down"}
+            connections = { "up", "right", "down" }
         elseif self.rotation == 1 then
-            connections = {"right", "down", "left"}
+            connections = { "right", "down", "left" }
         elseif self.rotation == 2 then
-            connections = {"down", "left", "up"}
+            connections = { "down", "left", "up" }
         else
-            connections = {"left", "up", "right"}
+            connections = { "left", "up", "right" }
         end
     elseif self.type == "cross" then
-        connections = {"up", "right", "down", "left"}
+        connections = { "up", "right", "down", "left" }
     elseif self.type == "source" then
         -- Source has one output direction
         if self.rotation == 0 then
-            connections = {"right"}  -- Output to right
+            connections = { "right" } -- Output to right
         elseif self.rotation == 1 then
-            connections = {"down"}
+            connections = { "down" }
         elseif self.rotation == 2 then
-            connections = {"left"}
+            connections = { "left" }
         else
-            connections = {"up"}
+            connections = { "up" }
         end
     elseif self.type == "target" then
         -- Target accepts from all directions
-        connections = {"up", "right", "down", "left"}
+        connections = { "up", "right", "down", "left" }
     end
 
     return connections
@@ -111,9 +111,9 @@ function Tile:draw(offsetX, offsetY, gridSize, isPowered)
     love.graphics.setLineWidth(3)
 
     if isPowered then
-        setColor(0.3, 0.8, 1.0)  -- Powered - blue
+        setColor(0.3, 0.8, 1.0) -- Powered - blue
     else
-        setColor(0.5, 0.5, 0.7)  -- Unpowered - gray
+        setColor(0.5, 0.5, 0.7) -- Unpowered - gray
     end
 
     local connections = self:getConnections()
@@ -132,10 +132,10 @@ function Tile:draw(offsetX, offsetY, gridSize, isPowered)
 
     -- Special rendering for source and target
     if self.type == "source" then
-        setColor(0.2, 0.8, 0.2)  -- Green source
+        setColor(0.2, 0.8, 0.2) -- Green source
         circle("fill", centerX, centerY, gridSize / 4)
     elseif self.type == "target" then
-        setColor(1.0, 0.8, 0.2)  -- Yellow target
+        setColor(1.0, 0.8, 0.2) -- Yellow target
         circle("line", centerX, centerY, gridSize / 3)
         if isPowered then
             setColor(1.0, 1.0, 0.0)
