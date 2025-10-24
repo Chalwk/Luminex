@@ -61,9 +61,7 @@ function Laser:calculateBeamPath(mirrors)
         })
 
         -- Check bounds
-        if nextX < 0 or nextX >= 10 or nextY < 0 or nextY >= 10 then
-            break
-        end
+        if nextX < 0 or nextX >= 10 or nextY < 0 or nextY >= 10 then break end
 
         -- Check for mirror at next position
         local mirrorKey = nextX .. "," .. nextY
