@@ -37,6 +37,7 @@ function Game.new()
 
     local win = love.audio.newSource("assets/sounds/win.mp3", "static")
     local rotate = love.audio.newSource("assets/sounds/rotate.mp3", "static")
+    local connect = love.audio.newSource("assets/sounds/connect.mp3", "static")
 
     -- Simple sound placeholders - you can replace with actual files
     instance.sounds = {
@@ -48,6 +49,11 @@ function Game.new()
         rotate = {
             play = function()
                 love.audio.play(rotate)
+            end
+        },
+        connect = {
+            play = function()
+                love.audio.play(connect)
             end
         }
     }
@@ -81,11 +87,17 @@ function Game:loadLevel(levelNumber)
     self.moves = 0
     self.particles = {}
 
+    -- Reset the powered targets tracking
+    self.previouslyPoweredTargets = {}
+
     self:calculateBoard() -- Recalculate board with new level dimensions
 end
 
 function Game:update(dt)
     if self.levelComplete then return end
+
+    -- Check for newly connected targets before checking level completion
+    self:checkTargetConnections()
 
     -- Check level completion
     if not self.levelComplete and self.levelManager:isLevelComplete() then
@@ -96,6 +108,34 @@ function Game:update(dt)
 
     -- Update particles
     self:updateParticles(dt)
+end
+
+function Game:checkTargetConnections()
+    if not self.levelManager then return end
+
+    local currentPoweredTargets = {}
+    local targets = self.levelManager:getTargets()
+
+    -- Get current powered state of all targets
+    for _, target in ipairs(targets) do
+        if target.powered then
+            currentPoweredTargets[target.x .. "," .. target.y] = true
+        end
+    end
+
+    -- Check for newly connected targets (that weren't powered before)
+    for targetKey, _ in pairs(currentPoweredTargets) do
+        if not self.previouslyPoweredTargets[targetKey] then
+            -- This target was just connected
+            -- Only play sound if not all targets are powered (not the winning move)
+            if not self.levelManager:isLevelComplete() then
+                self.sounds.connect:play()
+            end
+        end
+    end
+
+    -- Update the previous state
+    self.previouslyPoweredTargets = currentPoweredTargets
 end
 
 function Game:updateParticles(dt)

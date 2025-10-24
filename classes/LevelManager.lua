@@ -63,9 +63,9 @@ function LevelManager:initLevels()
                 { "empty",  "target",   "empty",    "empty" }
             },
             rotations = {
+                1, 0, 0, 0,
                 0, 0, 0, 0,
-                0, 0, 0, 0,
-                0, 0, 0, 0,
+                0, 1, 0, 0,
                 0, 0, 0, 0 }
         },
         { -- Level 5: Spiral (5x4)
@@ -113,17 +113,17 @@ function LevelManager:initLevels()
         { -- Level 8: Complex Junction (5x5)
             name = "Junction Box",
             grid = {
-                { "empty",    "source",   "empty",    "empty",      "empty" },
-                { "straight", "cross",    "straight", "t_junction", "target" },
-                { "empty",    "straight", "empty",    "corner",     "empty" },
-                { "empty",    "target",   "empty",    "corner",     "empty" },
-                { "empty",    "empty",    "empty",    "target",     "empty" }
+                { "empty", "source",   "empty",    "empty",      "empty" },
+                { "empty", "cross",    "straight", "t_junction", "target" },
+                { "empty", "straight", "empty",    "corner",     "corner" },
+                { "empty", "target",   "empty",    "corner",     "straight" },
+                { "empty", "empty",    "empty",    "target",     "corner" }
             },
             rotations = {
                 0, 0, 0, 0, 0,
                 0, 0, 0, 0, 0,
-                0, 0, 0, 0, 0,
-                0, 0, 0, 0, 0,
+                0, 1, 0, 1, 0,
+                0, 0, 0, 0, 1,
                 0, 0, 0, 0, 0 }
         },
         { -- Level 9: Figure Eight (5x5)
@@ -148,7 +148,7 @@ function LevelManager:initLevels()
                 { "source", "straight", "t_junction", "straight", "t_junction", "target" },
                 { "empty",  "empty",    "corner",     "empty",    "corner",     "empty" },
                 { "source", "straight", "cross",      "straight", "t_junction", "target" },
-                { "empty",  "empty",    "corner",     "empty",    "corner",     "empty" },
+                { "empty",  "empty",    "straight",     "empty",    "corner",     "empty" },
                 { "empty",  "empty",    "target",     "empty",    "empty",      "empty" }
             },
             rotations = {
@@ -207,8 +207,7 @@ function LevelManager:initLevels()
                 0, 0, 0, 0, 0, 0,
                 0, 0, 0, 0, 0, 0,
                 0, 0, 0, 0, 0, 0,
-                0, 0, 0, 0, 0, 0
-            }
+                0, 0, 0, 0, 0, 0 }
         },
         { -- Level 14: Ultimate Challenge (7x6)
             name = "Ultimate Challenge",
