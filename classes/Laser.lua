@@ -3,6 +3,13 @@
 -- Copyright (c) 2025 Jericho Crosby (Chalwk)
 
 local math_sin = math.sin
+local table_insert = table.insert
+
+local circle = love.graphics.circle
+local line = love.graphics.line
+local polygon = love.graphics.polygon
+local rectangle = love.graphics.rectangle
+local setColor = love.graphics.setColor
 
 local Laser = {}
 Laser.__index = Laser
@@ -54,7 +61,7 @@ function Laser:calculateBeamPath(mirrors)
         end
 
         -- Add current segment
-        table.insert(segments, {
+        table_insert(segments, {
             startX = x, startY = y,
             endX = nextX, endY = nextY,
             dir = dir
@@ -119,23 +126,23 @@ function Laser:draw(offsetX, offsetY)
 
         -- Outer glow
         love.graphics.setLineWidth(8)
-        love.graphics.setColor(1, 0.2, 0.2, 0.2 * pulse)
-        love.graphics.line(startScreenX, startScreenY, endScreenX, endScreenY)
+        setColor(1, 0.2, 0.2, 0.2 * pulse)
+        line(startScreenX, startScreenY, endScreenX, endScreenY)
 
         -- Main beam
         love.graphics.setLineWidth(5)
-        love.graphics.setColor(1, 0.5, 0.2, 0.6 * pulse)
-        love.graphics.line(startScreenX, startScreenY, endScreenX, endScreenY)
+        setColor(1, 0.5, 0.2, 0.6 * pulse)
+        line(startScreenX, startScreenY, endScreenX, endScreenY)
 
         -- Inner core
         love.graphics.setLineWidth(2)
-        love.graphics.setColor(1, 0.8, 0.4, 0.9 * pulse)
-        love.graphics.line(startScreenX, startScreenY, endScreenX, endScreenY)
+        setColor(1, 0.8, 0.4, 0.9 * pulse)
+        line(startScreenX, startScreenY, endScreenX, endScreenY)
 
         -- Sparkle effect at segment joints
         if i > 1 then
-            love.graphics.setColor(1, 1, 1, pulse * 0.8)
-            love.graphics.circle("fill", startScreenX, startScreenY, 2)
+            setColor(1, 1, 1, pulse * 0.8)
+            circle("fill", startScreenX, startScreenY, 2)
         end
     end
 
@@ -150,40 +157,40 @@ function Laser:drawLaserSource(offsetX, offsetY)
     local y = self.source.y * self.gridSize + offsetY
 
     -- Base
-    love.graphics.setColor(0.1, 0.3, 0.8)
-    love.graphics.rectangle("fill", x + 8, y + 8, self.gridSize - 16, self.gridSize - 16)
+    setColor(0.1, 0.3, 0.8)
+    rectangle("fill", x + 8, y + 8, self.gridSize - 16, self.gridSize - 16)
 
     -- Emitter
-    love.graphics.setColor(0.3, 0.6, 1.0)
-    love.graphics.rectangle("fill", x + 12, y + 12, self.gridSize - 24, self.gridSize - 24)
+    setColor(0.3, 0.6, 1.0)
+    rectangle("fill", x + 12, y + 12, self.gridSize - 24, self.gridSize - 24)
 
     -- Direction indicator with glow
     local pulse = (math_sin(self.time * 6) + 1) * 0.3 + 0.4
-    love.graphics.setColor(0.5, 0.8, 1.0, pulse)
+    setColor(0.5, 0.8, 1.0, pulse)
 
     local centerX = x + self.gridSize / 2
     local centerY = y + self.gridSize / 2
 
     if self.source.dir == "right" then
-        love.graphics.polygon("fill",
+        polygon("fill",
             centerX + 10, centerY,
             centerX + 2, centerY - 6,
             centerX + 2, centerY + 6
         )
     elseif self.source.dir == "left" then
-        love.graphics.polygon("fill",
+        polygon("fill",
             centerX - 10, centerY,
             centerX - 2, centerY - 6,
             centerX - 2, centerY + 6
         )
     elseif self.source.dir == "down" then
-        love.graphics.polygon("fill",
+        polygon("fill",
             centerX, centerY + 10,
             centerX - 6, centerY + 2,
             centerX + 6, centerY + 2
         )
     elseif self.source.dir == "up" then
-        love.graphics.polygon("fill",
+        polygon("fill",
             centerX, centerY - 10,
             centerX - 6, centerY - 2,
             centerX + 6, centerY - 2

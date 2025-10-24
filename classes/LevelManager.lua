@@ -18,32 +18,235 @@ end
 
 function LevelManager:initLevels()
     self.levels = {
-        { -- Level 1: Simple straight line
+        { -- Level 1: Simple straight line (5x3)
             name = "First Connection",
             grid = {
                 { "source", "straight", "straight", "straight", "target" },
                 { "empty",  "empty",    "empty",    "empty",    "empty" },
                 { "empty",  "empty",    "empty",    "empty",    "empty" }
             },
-            rotations = { 0, 0, 0, 0, 0 } -- Initial rotations
+            rotations = {
+                0, 0, 0, 0, 0,
+                0, 0, 0, 0, 0,
+                0, 0, 0, 0, 0 }
         },
-        {                                 -- Level 2: Right angle
+        { -- Level 2: Right angle (5x3)
             name = "The Corner",
             grid = {
                 { "source", "straight", "corner", "empty",    "empty" },
                 { "empty",  "empty",    "corner", "straight", "target" },
                 { "empty",  "empty",    "empty",  "empty",    "empty" }
             },
-            rotations = { 0, 0, 0, 0, 0 }
+            rotations = {
+                1, 0, 0, 0, 0,
+                0, 0, 0, 0, 0,
+                0, 0, 0, 0, 0 }
         },
-        { -- Level 3: Split path
+        { -- Level 3: Split path (5x3)
             name = "Double Trouble",
             grid = {
                 { "source", "straight", "t_junction", "straight", "target" },
                 { "empty",  "empty",    "corner",     "corner",   "empty" },
                 { "empty",  "empty",    "empty",      "corner",   "target" }
             },
-            rotations = { 0, 0, 0, 0, 0, 0, 0, 0 }
+            rotations = {
+                1, 0, 0, 0, 0,
+                0, 0, 0, 0, 0,
+                0, 0, 0, 0, 0 }
+        },
+        { -- Level 4: Crossroads (4x4)
+            name = "Crossroads",
+            grid = {
+                { "empty",  "empty",    "empty",    "empty" },
+                { "source", "cross",    "straight", "target" },
+                { "empty",  "straight", "empty",    "empty" },
+                { "empty",  "target",   "empty",    "empty" }
+            },
+            rotations = {
+                0, 0, 0, 0,
+                0, 0, 0, 0,
+                0, 0, 0, 0,
+                0, 0, 0, 0 }
+        },
+        { -- Level 5: Spiral (5x4)
+            name = "The Spiral",
+            grid = {
+                { "source", "straight", "corner",   "corner", "corner" },
+                { "empty",  "empty",    "straight", "target", "straight" },
+                { "empty",  "empty",    "corner",   "corner", "straight" },
+                { "empty",  "empty",    "empty",    "empty",  "empty" }
+            },
+            rotations = {
+                0, 0, 0, 0, 0,
+                0, 0, 0, 0, 0,
+                0, 0, 0, 0, 0,
+                0, 0, 0, 0, 0 }
+        },
+        { -- Level 6: Double Source (5x4)
+            name = "Twin Beams",
+            grid = {
+                { "source", "straight", "t_junction", "straight", "target" },
+                { "empty",  "empty",    "corner",     "empty",    "empty" },
+                { "source", "straight", "t_junction", "straight", "target" },
+                { "empty",  "empty",    "empty",      "empty",    "empty" }
+            },
+            rotations = {
+                0, 0, 0, 0, 0,
+                0, 0, 0, 0, 0,
+                0, 0, 0, 0, 0,
+                0, 0, 0, 0, 0 }
+        },
+        { -- Level 7: Maze (5x4)
+            name = "The Maze",
+            grid = {
+                { "source", "straight", "corner",   "corner",     "corner" },
+                { "empty",  "empty",    "straight", "t_junction", "straight" },
+                { "empty",  "empty",    "corner",   "straight",   "target" },
+                { "empty",  "empty",    "empty",    "corner",     "corner" }
+            },
+            rotations = {
+                0, 0, 0, 0, 0,
+                0, 0, 0, 0, 0,
+                0, 0, 0, 0, 0,
+                0, 0, 0, 0, 0 }
+        },
+        { -- Level 8: Complex Junction (5x5)
+            name = "Junction Box",
+            grid = {
+                { "empty",    "source",   "empty",    "empty",      "empty" },
+                { "straight", "cross",    "straight", "t_junction", "target" },
+                { "empty",    "straight", "empty",    "corner",     "empty" },
+                { "empty",    "target",   "empty",    "corner",     "empty" },
+                { "empty",    "empty",    "empty",    "target",     "empty" }
+            },
+            rotations = {
+                0, 0, 0, 0, 0,
+                0, 0, 0, 0, 0,
+                0, 0, 0, 0, 0,
+                0, 0, 0, 0, 0,
+                0, 0, 0, 0, 0 }
+        },
+        { -- Level 9: Figure Eight (5x5)
+            name = "Figure Eight",
+            grid = {
+                { "source", "straight", "corner",   "corner",   "corner" },
+                { "empty",  "empty",    "straight", "cross",    "straight" },
+                { "empty",  "empty",    "corner",   "straight", "target" },
+                { "empty",  "empty",    "corner",   "corner",   "corner" },
+                { "empty",  "empty",    "empty",    "empty",    "empty" }
+            },
+            rotations = {
+                0, 0, 0, 0, 0,
+                0, 0, 0, 0, 0,
+                0, 0, 0, 0, 0,
+                0, 0, 0, 0, 0,
+                0, 0, 0, 0, 0 }
+        },
+        { -- Level 10: Master Challenge (6x5)
+            name = "Master Challenge",
+            grid = {
+                { "source", "straight", "t_junction", "straight", "t_junction", "target" },
+                { "empty",  "empty",    "corner",     "empty",    "corner",     "empty" },
+                { "source", "straight", "cross",      "straight", "t_junction", "target" },
+                { "empty",  "empty",    "corner",     "empty",    "corner",     "empty" },
+                { "empty",  "empty",    "target",     "empty",    "empty",      "empty" }
+            },
+            rotations = {
+                0, 0, 0, 0, 0, 0,
+                0, 0, 0, 0, 0, 0,
+                0, 0, 0, 0, 0, 0,
+                0, 0, 0, 0, 0, 0,
+                0, 0, 0, 0, 0, 0 }
+        },
+        { -- Level 11: The Vortex (6x5)
+            name = "The Vortex",
+            grid = {
+                { "source", "straight", "corner",   "corner",   "corner",   "corner" },
+                { "empty",  "empty",    "straight", "cross",    "straight", "straight" },
+                { "empty",  "empty",    "corner",   "straight", "target",   "empty" },
+                { "empty",  "empty",    "corner",   "corner",   "corner",   "straight" },
+                { "empty",  "empty",    "empty",    "empty",    "empty",    "target" }
+            },
+            rotations = {
+                0, 0, 0, 0, 0, 0,
+                0, 0, 0, 0, 0, 0,
+                0, 0, 0, 0, 0, 0,
+                0, 0, 0, 0, 0, 0,
+                0, 0, 0, 0, 0, 0 }
+        },
+        { -- Level 12: Dual Maze (6x6)
+            name = "Dual Maze",
+            grid = {
+                { "source", "straight", "t_junction", "straight", "t_junction", "target" },
+                { "empty",  "empty",    "corner",     "empty",    "corner",     "empty" },
+                { "source", "straight", "cross",      "straight", "t_junction", "target" },
+                { "empty",  "empty",    "corner",     "empty",    "corner",     "empty" },
+                { "empty",  "empty",    "target",     "empty",    "target",     "empty" },
+                { "empty",  "empty",    "empty",      "empty",    "empty",      "empty" }
+            },
+            rotations = {
+                0, 0, 0, 0, 0, 0,
+                0, 0, 0, 0, 0, 0,
+                0, 0, 0, 0, 0, 0,
+                0, 0, 0, 0, 0, 0,
+                0, 0, 0, 0, 0, 0,
+                0, 0, 0, 0, 0, 0 }
+        },
+        { -- Level 13: The Grid (6x5)
+            name = "The Grid",
+            grid = {
+                { "source", "straight", "cross",    "straight", "cross",    "target" },
+                { "empty",  "empty",    "straight", "empty",    "straight", "empty" },
+                { "source", "straight", "cross",    "straight", "cross",    "target" },
+                { "empty",  "empty",    "straight", "empty",    "straight", "empty" },
+                { "target", "straight", "cross",    "straight", "cross",    "target" }
+            },
+            rotations = {
+                0, 0, 0, 0, 0, 0,
+                0, 0, 0, 0, 0, 0,
+                0, 0, 0, 0, 0, 0,
+                0, 0, 0, 0, 0, 0,
+                0, 0, 0, 0, 0, 0,
+                0, 0, 0, 0, 0, 0
+            }
+        },
+        { -- Level 14: Ultimate Challenge (7x6)
+            name = "Ultimate Challenge",
+            grid = {
+                { "source", "straight", "t_junction", "straight", "cross",      "straight", "target" },
+                { "empty",  "empty",    "corner",     "empty",    "straight",   "empty",    "empty" },
+                { "source", "straight", "cross",      "straight", "t_junction", "straight", "target" },
+                { "empty",  "empty",    "corner",     "empty",    "corner",     "empty",    "empty" },
+                { "source", "straight", "t_junction", "straight", "cross",      "straight", "target" },
+                { "empty",  "empty",    "empty",      "empty",    "empty",      "empty",    "empty" }
+            },
+            rotations = {
+                0, 0, 0, 0, 0, 0, 0,
+                0, 0, 0, 0, 0, 0, 0,
+                0, 0, 0, 0, 0, 0, 0,
+                0, 0, 0, 0, 0, 0, 0,
+                0, 0, 0, 0, 0, 0, 0,
+                0, 0, 0, 0, 0, 0, 0 }
+        },
+        { -- Level 15: Final Boss (8x7)
+            name = "Final Boss",
+            grid = {
+                { "source", "straight", "cross",    "straight", "cross",    "straight", "cross",    "target" },
+                { "empty",  "empty",    "straight", "empty",    "straight", "empty",    "straight", "empty" },
+                { "source", "straight", "cross",    "straight", "cross",    "straight", "cross",    "target" },
+                { "empty",  "empty",    "straight", "empty",    "straight", "empty",    "straight", "empty" },
+                { "source", "straight", "cross",    "straight", "cross",    "straight", "cross",    "target" },
+                { "empty",  "empty",    "straight", "empty",    "straight", "empty",    "straight", "empty" },
+                { "target", "straight", "cross",    "straight", "cross",    "straight", "cross",    "target" }
+            },
+            rotations = {
+                0, 0, 0, 0, 0, 0, 0, 0,
+                0, 0, 0, 0, 0, 0, 0, 0,
+                0, 0, 0, 0, 0, 0, 0, 0,
+                0, 0, 0, 0, 0, 0, 0, 0,
+                0, 0, 0, 0, 0, 0, 0, 0,
+                0, 0, 0, 0, 0, 0, 0, 0,
+                0, 0, 0, 0, 0, 0, 0, 0 }
         }
     }
 end
@@ -81,11 +284,11 @@ function LevelManager:loadLevel(levelNumber)
     self.gridHeight = #levelData.grid
 end
 
-function LevelManager:rotateTile(gridX, gridY)
+function LevelManager:rotateTile(gridX, gridY, clockwise)
     if self.tiles[gridY + 1] and self.tiles[gridY + 1][gridX + 1] then
         local tile = self.tiles[gridY + 1][gridX + 1]
-        if tile.type ~= "source" and tile.type ~= "target" then
-            return tile:rotate()
+        if tile.type ~= "target" then
+            return tile:rotate(clockwise)
         end
     end
     return false
@@ -175,6 +378,7 @@ function LevelManager:getOppositeDirection(dir)
     }
     return opposites[dir]
 end
+
 function LevelManager:getTargets()
     return self.targets
 end

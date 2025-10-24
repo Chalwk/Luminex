@@ -5,6 +5,13 @@
 local math_floor = math.floor
 local math_random = math.random
 local table_insert = table.insert
+local table_remove = table.remove
+
+local line = love.graphics.line
+local printf = love.graphics.printf
+local circle = love.graphics.circle
+local rectangle = love.graphics.rectangle
+local setColor = love.graphics.setColor
 
 local LevelManager = require("classes/LevelManager")
 
@@ -105,7 +112,7 @@ function Game:updateParticles(dt)
         particle.y = particle.y + particle.dy * dt
 
         if particle.life <= 0 then
-            table.remove(self.particles, i)
+            table_remove(self.particles, i)
         end
     end
 end
@@ -154,8 +161,8 @@ function Game:drawBoard()
     local gridHeight = self.levelManager.gridHeight or 5
 
     -- Board background
-    love.graphics.setColor(0.08, 0.05, 0.12, 0.9)
-    love.graphics.rectangle("fill",
+    setColor(0.08, 0.05, 0.12, 0.9)
+    rectangle("fill",
         self.boardOffsetX,
         self.boardOffsetY,
         gridWidth * self.gridSize,
@@ -163,12 +170,12 @@ function Game:drawBoard()
     )
 
     -- Draw grid lines
-    love.graphics.setColor(0.3, 0.3, 0.5, 0.4)
+    setColor(0.3, 0.3, 0.5, 0.4)
     love.graphics.setLineWidth(1)
 
     -- Vertical grid lines
     for x = 0, gridWidth do
-        love.graphics.line(
+        line(
             self.boardOffsetX + x * self.gridSize,
             self.boardOffsetY,
             self.boardOffsetX + x * self.gridSize,
@@ -178,7 +185,7 @@ function Game:drawBoard()
 
     -- Horizontal grid lines
     for y = 0, gridHeight do
-        love.graphics.line(
+        line(
             self.boardOffsetX,
             self.boardOffsetY + y * self.gridSize,
             self.boardOffsetX + gridWidth * self.gridSize,
@@ -187,9 +194,9 @@ function Game:drawBoard()
     end
 
     -- Board border
-    love.graphics.setColor(0.5, 0.2, 0.8)
+    setColor(0.5, 0.2, 0.8)
     love.graphics.setLineWidth(3)
-    love.graphics.rectangle("line",
+    rectangle("line",
         self.boardOffsetX,
         self.boardOffsetY,
         gridWidth * self.gridSize,
@@ -201,8 +208,8 @@ end
 function Game:drawParticles()
     for _, particle in ipairs(self.particles) do
         local alpha = particle.life * 0.8
-        love.graphics.setColor(particle.color[1], particle.color[2], particle.color[3], alpha)
-        love.graphics.circle("fill",
+        setColor(particle.color[1], particle.color[2], particle.color[3], alpha)
+        circle("fill",
             particle.x + self.boardOffsetX,
             particle.y + self.boardOffsetY,
             particle.size
@@ -211,7 +218,7 @@ function Game:drawParticles()
 end
 
 function Game:drawUI()
-    love.graphics.setColor(1, 1, 1)
+    setColor(1, 1, 1)
     love.graphics.setFont(self.fonts.medium)
 
     -- Level info
@@ -221,33 +228,33 @@ function Game:drawUI()
     -- Level name
     if self.levelManager then
         local levelName = self.levelManager:getLevelName(self.currentLevel)
-        love.graphics.printf(levelName, 0, 20, self.screenWidth - 20, "right")
+        printf(levelName, 0, 20, self.screenWidth - 20, "right")
     end
 
     -- Controls help
-    love.graphics.setColor(1, 1, 1, 0.7)
-    love.graphics.printf("Click tiles to rotate | R: Reset | ESC: Menu",
+    setColor(1, 1, 1, 0.7)
+    printf("Left-click: Rotate clockwise | Right-click: Rotate counter-clockwise | R: Reset | ESC: Menu",
         0, self.screenHeight - 30, self.screenWidth, "center")
 end
 
 function Game:drawLevelComplete()
     -- Semi-transparent overlay
-    love.graphics.setColor(0, 0, 0, 0.7)
-    love.graphics.rectangle("fill", 0, 0, self.screenWidth, self.screenHeight)
+    setColor(0, 0, 0, 0.7)
+    rectangle("fill", 0, 0, self.screenWidth, self.screenHeight)
 
     love.graphics.setFont(self.fonts.large)
-    love.graphics.setColor(0.3, 0.8, 1.0)
-    love.graphics.printf("LEVEL COMPLETE!", 0, self.screenHeight / 2 - 100, self.screenWidth, "center")
+    setColor(0.3, 0.8, 1.0)
+    printf("LEVEL COMPLETE!", 0, self.screenHeight / 2 - 100, self.screenWidth, "center")
 
     love.graphics.setFont(self.fonts.medium)
-    love.graphics.setColor(1, 1, 1)
-    love.graphics.printf("Moves: " .. self.moves, 0, self.screenHeight / 2 - 30, self.screenWidth, "center")
+    setColor(1, 1, 1)
+    printf("Moves: " .. self.moves, 0, self.screenHeight / 2 - 30, self.screenWidth, "center")
 
     love.graphics.setFont(self.fonts.small)
-    love.graphics.printf("Tap to continue", 0, self.screenHeight / 2 + 80, self.screenWidth, "center")
+    printf("Tap to continue", 0, self.screenHeight / 2 + 80, self.screenWidth, "center")
 end
 
-function Game:handleTouch(x, y)
+function Game:handleTouch(x, y, button)
     if self.levelComplete then
         self:loadLevel(self.currentLevel + 1)
         return
@@ -261,7 +268,8 @@ function Game:handleTouch(x, y)
 
     if gridX >= 0 and gridX < self.levelManager.gridWidth and
         gridY >= 0 and gridY < self.levelManager.gridHeight then
-        if self.levelManager:rotateTile(gridX, gridY) then
+        local clockwise = (button == 1) -- Left click = clockwise, right click = counter-clockwise
+        if self.levelManager:rotateTile(gridX, gridY, clockwise) then
             self.moves = self.moves + 1
             self.sounds.rotate:play()
         end

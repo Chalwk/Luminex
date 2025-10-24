@@ -2,6 +2,13 @@
 -- License: MIT
 -- Copyright (c) 2025 Jericho Crosby (Chalwk)
 
+local ipairs = ipairs
+
+local line = love.graphics.line
+local circle = love.graphics.circle
+local setColor = love.graphics.setColor
+local rectangle = love.graphics.rectangle
+
 local Tile = {}
 Tile.__index = Tile
 
@@ -17,8 +24,16 @@ function Tile.new(x, y, tileType, rotation)
     return instance
 end
 
-function Tile:rotate()
-    self.rotation = (self.rotation + 1) % 4
+function Tile:rotate(clockwise)
+    clockwise = clockwise ~= false -- Default to clockwise if not specified
+    if clockwise then
+        self.rotation = (self.rotation + 1) % 4
+    else
+        self.rotation = (self.rotation - 1) % 4
+        if self.rotation < 0 then
+            self.rotation = 3
+        end
+    end
     return self.rotation
 end
 
@@ -79,15 +94,15 @@ function Tile:draw(offsetX, offsetY, gridSize, isPowered)
 
     -- Tile background
     if isPowered then
-        love.graphics.setColor(0.3, 0.6, 1.0, 0.3)
+        setColor(0.3, 0.6, 1.0, 0.3)
     else
-        love.graphics.setColor(0.1, 0.1, 0.2, 0.8)
+        setColor(0.1, 0.1, 0.2, 0.8)
     end
-    love.graphics.rectangle("fill", x, y, gridSize, gridSize)
+    rectangle("fill", x, y, gridSize, gridSize)
 
     -- Tile border
-    love.graphics.setColor(0.3, 0.3, 0.5)
-    love.graphics.rectangle("line", x, y, gridSize, gridSize)
+    setColor(0.3, 0.3, 0.5)
+    rectangle("line", x, y, gridSize, gridSize)
 
     -- Draw connections based on type
     local centerX = x + gridSize / 2
@@ -96,35 +111,35 @@ function Tile:draw(offsetX, offsetY, gridSize, isPowered)
     love.graphics.setLineWidth(3)
 
     if isPowered then
-        love.graphics.setColor(0.3, 0.8, 1.0)  -- Powered - blue
+        setColor(0.3, 0.8, 1.0)  -- Powered - blue
     else
-        love.graphics.setColor(0.5, 0.5, 0.7)  -- Unpowered - gray
+        setColor(0.5, 0.5, 0.7)  -- Unpowered - gray
     end
 
     local connections = self:getConnections()
 
     for _, dir in ipairs(connections) do
         if dir == "up" then
-            love.graphics.line(centerX, centerY, centerX, y)
+            line(centerX, centerY, centerX, y)
         elseif dir == "right" then
-            love.graphics.line(centerX, centerY, x + gridSize, centerY)
+            line(centerX, centerY, x + gridSize, centerY)
         elseif dir == "down" then
-            love.graphics.line(centerX, centerY, centerX, y + gridSize)
+            line(centerX, centerY, centerX, y + gridSize)
         elseif dir == "left" then
-            love.graphics.line(centerX, centerY, x, centerY)
+            line(centerX, centerY, x, centerY)
         end
     end
 
     -- Special rendering for source and target
     if self.type == "source" then
-        love.graphics.setColor(0.2, 0.8, 0.2)  -- Green source
-        love.graphics.circle("fill", centerX, centerY, gridSize / 4)
+        setColor(0.2, 0.8, 0.2)  -- Green source
+        circle("fill", centerX, centerY, gridSize / 4)
     elseif self.type == "target" then
-        love.graphics.setColor(1.0, 0.8, 0.2)  -- Yellow target
-        love.graphics.circle("line", centerX, centerY, gridSize / 3)
+        setColor(1.0, 0.8, 0.2)  -- Yellow target
+        circle("line", centerX, centerY, gridSize / 3)
         if isPowered then
-            love.graphics.setColor(1.0, 1.0, 0.0)
-            love.graphics.circle("fill", centerX, centerY, gridSize / 6)
+            setColor(1.0, 1.0, 0.0)
+            circle("fill", centerX, centerY, gridSize / 6)
         end
     end
 

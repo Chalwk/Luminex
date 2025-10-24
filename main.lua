@@ -63,7 +63,7 @@ function love.draw()
 end
 
 function love.mousepressed(x, y, button, istouch)
-    if button == 1 then
+    if button == 1 or button == 2 then -- Left click (1) or right click (2)
         if gameState == "menu" then
             local action = menu:handleClick(x, y, "menu")
             if action == "start" then
@@ -91,7 +91,7 @@ function love.mousepressed(x, y, button, istouch)
                 gameState = "options"
             end
         elseif gameState == "playing" then
-            game:handleTouch(x, y)
+            game:handleTouch(x, y, button)
         end
     end
 end
