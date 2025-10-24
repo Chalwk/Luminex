@@ -165,7 +165,7 @@ function Game:drawBoard()
         )
     end
 
-    -- Draw coordinate labels (1-indexed for user readability)
+    -- Draw coordinate labels
     love.graphics.setColor(1, 1, 1, 0.6)
     love.graphics.setFont(self.fonts.small)
     for x = 0, 9 do
