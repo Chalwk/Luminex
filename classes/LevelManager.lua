@@ -35,7 +35,8 @@ function LevelManager:initLevels()
             rotations = {
                 0, 0, 0, 0, 0,
                 0, 0, 0, 0, 0,
-                0, 0, 0, 0, 0 }
+                0, 0, 0, 0, 0 },
+            bulbTypes = { 1 }
         },
         { -- Level 2: Right angle (5x3)
             name = "The Corner",
@@ -47,7 +48,8 @@ function LevelManager:initLevels()
             rotations = {
                 1, 0, 0, 0, 0,
                 0, 0, 0, 0, 0,
-                0, 0, 0, 0, 0 }
+                0, 0, 0, 0, 0 },
+            bulbTypes = { 2 }
         },
         { -- Level 3: Split path (5x3)
             name = "Double Trouble",
@@ -59,7 +61,8 @@ function LevelManager:initLevels()
             rotations = {
                 1, 0, 0, 0, 0,
                 0, 0, 0, 0, 0,
-                0, 0, 0, 0, 0 }
+                0, 0, 0, 0, 0 },
+            bulbTypes = { 1, 3 }
         },
         { -- Level 4: Crossroads (4x4)
             name = "Crossroads",
@@ -73,7 +76,8 @@ function LevelManager:initLevels()
                 1, 0, 0, 0,
                 0, 0, 0, 0,
                 0, 1, 0, 0,
-                0, 0, 0, 0 }
+                0, 0, 0, 0 },
+            bulbTypes = { 2, 4 }
         },
         { -- Level 5: Spiral (5x4)
             name = "The Spiral",
@@ -87,7 +91,8 @@ function LevelManager:initLevels()
                 0, 0, 0, 0, 0,
                 0, 0, 0, 0, 0,
                 0, 0, 0, 0, 0,
-                0, 0, 0, 0, 0 }
+                0, 0, 0, 0, 0 },
+            bulbTypes = { 3 }
         },
         { -- Level 6: Double Source (5x4)
             name = "Twin Beams",
@@ -101,7 +106,8 @@ function LevelManager:initLevels()
                 0, 0, 0, 0, 0,
                 0, 0, 0, 0, 0,
                 0, 0, 0, 0, 0,
-                0, 0, 0, 0, 0 }
+                0, 0, 0, 0, 0 },
+            bulbTypes = { 1, 4 }
         },
         { -- Level 7: Maze (5x4)
             name = "The Maze",
@@ -115,7 +121,8 @@ function LevelManager:initLevels()
                 0, 0, 0, 0, 0,
                 0, 0, 0, 0, 0,
                 0, 0, 0, 0, 0,
-                0, 0, 0, 0, 0 }
+                0, 0, 0, 0, 0 },
+            bulbTypes = { 3 }
         },
         { -- Level 8: Complex Junction (5x5)
             name = "Junction Box",
@@ -131,7 +138,8 @@ function LevelManager:initLevels()
                 0, 0, 0, 0, 0,
                 0, 1, 0, 1, 0,
                 0, 0, 0, 0, 1,
-                0, 0, 0, 0, 0 }
+                0, 0, 0, 0, 0 },
+            bulbTypes = { 1, 3, 4 }
         },
         { -- Level 9: Figure Eight (5x5)
             name = "Figure Eight",
@@ -147,7 +155,8 @@ function LevelManager:initLevels()
                 0, 0, 0, 0, 0,
                 0, 0, 0, 0, 0,
                 0, 0, 0, 0, 0,
-                0, 0, 0, 0, 0 }
+                0, 0, 0, 0, 0 },
+            bulbTypes = { 3 }
         },
         { -- Level 10: Master Challenge (6x5)
             name = "Master Challenge",
@@ -163,7 +172,8 @@ function LevelManager:initLevels()
                 0, 0, 0, 0, 0, 0,
                 0, 0, 0, 0, 0, 0,
                 0, 0, 0, 0, 0, 0,
-                0, 0, 0, 0, 0, 0 }
+                0, 0, 0, 0, 0, 0 },
+            bulbTypes = { 1, 3, 4 }
         },
         { -- Level 11: The Vortex (6x5)
             name = "The Vortex",
@@ -179,7 +189,8 @@ function LevelManager:initLevels()
                 0, 0, 0, 0, 0, 0,
                 0, 0, 0, 0, 0, 0,
                 0, 0, 0, 0, 0, 0,
-                0, 0, 0, 0, 0, 0 }
+                0, 0, 0, 0, 0, 0 },
+            bulbTypes = { 2, 3 }
         },
         { -- Level 12: Dual Maze (6x6)
             name = "Dual Maze",
@@ -187,7 +198,7 @@ function LevelManager:initLevels()
                 { "source", "straight", "t_junction", "straight", "t_junction", "target" },
                 { "empty",  "empty",    "corner",     "empty",    "corner",     "empty" },
                 { "source", "straight", "straight",   "cross",    "t_junction", "target" },
-                { "empty",  "empty",    "corner",     "corner",   "straight",     "empty" },
+                { "empty",  "empty",    "corner",     "corner",   "straight",   "empty" },
                 { "empty",  "empty",    "target",     "empty",    "target",     "empty" },
                 { "empty",  "empty",    "empty",      "empty",    "empty",      "empty" }
             },
@@ -197,7 +208,8 @@ function LevelManager:initLevels()
                 0, 0, 0, 0, 0, 0,
                 0, 0, 0, 0, 0, 0,
                 0, 0, 0, 0, 0, 0,
-                0, 0, 0, 0, 0, 0 }
+                0, 0, 0, 0, 0, 0 },
+            bulbTypes = { 1, 2, 3, 4 }
         },
         { -- Level 13: The Grid (6x5)
             name = "The Grid",
@@ -214,7 +226,8 @@ function LevelManager:initLevels()
                 0, 0, 0, 0, 0, 0,
                 0, 0, 0, 0, 0, 0,
                 0, 0, 0, 0, 0, 0,
-                0, 0, 0, 0, 0, 0 }
+                0, 0, 0, 0, 0, 0 },
+            bulbTypes = { 1, 2, 3, 4 }
         },
         { -- Level 14: Ultimate Challenge (7x6)
             name = "Ultimate Challenge",
@@ -232,7 +245,8 @@ function LevelManager:initLevels()
                 0, 0, 0, 0, 0, 0, 0,
                 0, 0, 0, 0, 0, 0, 0,
                 0, 0, 0, 0, 0, 0, 0,
-                0, 0, 0, 0, 0, 0, 0 }
+                0, 0, 0, 0, 0, 0, 0 },
+            bulbTypes = { 1, 2, 3 }
         },
         { -- Level 15: Final Boss (8x7)
             name = "Final Boss",
@@ -252,7 +266,8 @@ function LevelManager:initLevels()
                 0, 0, 0, 0, 0, 0, 0, 0,
                 0, 0, 0, 0, 0, 0, 0, 0,
                 0, 0, 0, 0, 0, 0, 0, 0,
-                0, 0, 0, 0, 0, 0, 0, 0 }
+                0, 0, 0, 0, 0, 0, 0, 0 },
+            bulbTypes = { 1, 2, 3, 4, 1 }
         }
     }
 end
@@ -269,11 +284,20 @@ function LevelManager:loadLevel(levelNumber)
     self.targets = {}
 
     local rotationIndex = 1
+    local targetIndex = 1
+
     for y, row in ipairs(levelData.grid) do
         self.tiles[y] = {}
         for x, tileType in ipairs(row) do
             local rotation = levelData.rotations[rotationIndex] or 0
-            local tile = require("classes/Tile").new(x - 1, y - 1, tileType, rotation)
+            local bulbType = 1 -- Default bulb type
+
+            if tileType == "target" then
+                bulbType = levelData.bulbTypes and levelData.bulbTypes[targetIndex] or 1
+                targetIndex = targetIndex + 1
+            end
+
+            local tile = require("classes/Tile").new(x - 1, y - 1, tileType, rotation, bulbType)
             self.tiles[y][x] = tile
 
             if tileType == "source" then
