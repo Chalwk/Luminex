@@ -148,7 +148,7 @@ function LevelManager:initLevels()
                 { "source", "straight", "t_junction", "straight", "t_junction", "target" },
                 { "empty",  "empty",    "corner",     "empty",    "corner",     "empty" },
                 { "source", "straight", "cross",      "straight", "t_junction", "target" },
-                { "empty",  "empty",    "straight",     "empty",    "corner",     "empty" },
+                { "empty",  "empty",    "straight",   "empty",    "corner",     "empty" },
                 { "empty",  "empty",    "target",     "empty",    "empty",      "empty" }
             },
             rotations = {

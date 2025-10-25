@@ -43,7 +43,7 @@ function Tile:getConnections()
 
     if self.type == "straight" then
         if self.rotation % 2 == 0 then
-            connections = { "up", "down" }  -- Vertical
+            connections = { "up", "down" }    -- Vertical
         else
             connections = { "left", "right" } -- Horizontal
         end
