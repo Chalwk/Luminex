@@ -5,10 +5,11 @@
 local Game = require("classes/Game")
 local Menu = require("classes/Menu")
 local BackgroundManager = require("classes/BackgroundManager")
+local LevelEditor = require("classes/LevelEditor")
 
-local game, menu, backgroundManager
+local game, menu, backgroundManager, levelEditor
 local screenWidth, screenHeight
-local gameState = "menu"
+local gameState = "menu" -- menu, level_select, playing, editor
 local fonts = {}
 
 local function updateScreenSize()
@@ -32,13 +33,16 @@ function love.load()
     game = Game.new()
     menu = Menu.new()
     backgroundManager = BackgroundManager.new()
+    levelEditor = LevelEditor.new()
 
     menu:setFonts(fonts)
     game:setFonts(fonts)
+    levelEditor:setFonts(fonts)
 
     updateScreenSize()
     menu:setScreenSize(screenWidth, screenHeight)
     game:setScreenSize(screenWidth, screenHeight)
+    levelEditor:setScreenSize(screenWidth, screenHeight)
 end
 
 function love.update(dt)
@@ -47,6 +51,8 @@ function love.update(dt)
         menu:update(dt, screenWidth, screenHeight)
     elseif gameState == "playing" then
         game:update(dt)
+    elseif gameState == "editor" then
+        levelEditor:update(dt)
     end
 
     backgroundManager:update(dt)
@@ -59,6 +65,8 @@ function love.draw()
         menu:draw(screenWidth, screenHeight, gameState)
     elseif gameState == "playing" then
         game:draw()
+    elseif gameState == "editor" then
+        levelEditor:draw()
     end
 end
 
@@ -71,6 +79,8 @@ function love.mousepressed(x, y, button, istouch)
                 game:loadLevel(1) -- Start with level 1
             elseif action == "level_select" then
                 gameState = "level_select"
+            elseif action == "editor" then
+                gameState = "editor"
             elseif action == "quit" then
                 love.event.quit()
             end
@@ -85,6 +95,8 @@ function love.mousepressed(x, y, button, istouch)
             end
         elseif gameState == "playing" then
             game:handleTouch(x, y, button)
+        elseif gameState == "editor" then
+            levelEditor:handleMousePress(x, y, button)
         end
     end
 end
@@ -95,11 +107,15 @@ function love.keypressed(key)
             gameState = "menu"
         elseif gameState == "level_select" then
             gameState = "menu"
+        elseif gameState == "editor" then
+            gameState = "menu"
         else
             love.event.quit()
         end
     elseif gameState == "playing" then
         game:handleKeypress(key)
+    elseif gameState == "editor" then
+        levelEditor:handleKeyPress(key)
     end
 end
 
@@ -107,4 +123,5 @@ function love.resize(w, h)
     updateScreenSize()
     menu:setScreenSize(screenWidth, screenHeight)
     game:setScreenSize(screenWidth, screenHeight)
+    levelEditor:setScreenSize(screenWidth, screenHeight)
 end

@@ -75,6 +75,14 @@ function Menu:createMenuButtons()
             y = 0
         },
         {
+            text = "Level Editor",
+            action = "editor",
+            width = 250,
+            height = 60,
+            x = 0,
+            y = 0
+        },
+        {
             text = "Quit",
             action = "quit",
             width = 250,
