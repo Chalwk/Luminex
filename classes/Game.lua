@@ -2,16 +2,21 @@
 -- License: MIT
 -- Copyright (c) 2025 Jericho Crosby (Chalwk)
 
+local pairs = pairs
+local ipairs = ipairs
+
 local math_floor = math.floor
 local math_random = math.random
 local table_insert = table.insert
 local table_remove = table.remove
 
 local line = love.graphics.line
+local print = love.graphics.print
 local printf = love.graphics.printf
 local circle = love.graphics.circle
-local rectangle = love.graphics.rectangle
 local setColor = love.graphics.setColor
+local rectangle = love.graphics.rectangle
+local setLineWidth = love.graphics.setLineWidth
 
 local LevelManager = require("classes/LevelManager")
 local SoundManager = require("classes/SoundManager")
@@ -185,7 +190,7 @@ function Game:drawBoard()
 
     -- Draw grid lines
     setColor(0.3, 0.3, 0.5, 0.4)
-    love.graphics.setLineWidth(1)
+    setLineWidth(1)
 
     -- Vertical grid lines
     for x = 0, gridWidth do
@@ -209,14 +214,14 @@ function Game:drawBoard()
 
     -- Board border
     setColor(0.5, 0.2, 0.8)
-    love.graphics.setLineWidth(3)
+    setLineWidth(3)
     rectangle("line",
         self.boardOffsetX,
         self.boardOffsetY,
         gridWidth * self.gridSize,
         gridHeight * self.gridSize
     )
-    love.graphics.setLineWidth(1)
+    setLineWidth(1)
 end
 
 function Game:drawParticles()
@@ -236,8 +241,8 @@ function Game:drawUI()
     love.graphics.setFont(self.fonts.medium)
 
     -- Level info
-    love.graphics.print("Level: " .. self.currentLevel, 20, 20)
-    love.graphics.print("Moves: " .. self.moves, 20, 50)
+    print("Level: " .. self.currentLevel, 20, 20)
+    print("Moves: " .. self.moves, 20, 50)
 
     -- Level name
     if self.levelManager then
@@ -247,8 +252,7 @@ function Game:drawUI()
 
     -- Controls help
     setColor(1, 1, 1, 0.7)
-    printf("Left-click: Rotate clockwise | Right-click: Rotate counter-clockwise | R: Reset | ESC: Menu",
-        0, self.screenHeight - 30, self.screenWidth, "center")
+    printf("Left/Right click: Rotate | R: Reset | ESC: Menu", 0, self.screenHeight - 30, self.screenWidth, "center")
 end
 
 function Game:drawLevelComplete()

@@ -2,6 +2,17 @@
 -- License: MIT
 -- Copyright (c) 2025 Jericho Crosby (Chalwk)
 
+local ipairs = ipairs
+local math_abs = math.abs
+local math_floor = math.floor
+local table_insert = table.insert
+
+local setColor = love.graphics.setColor
+local rectangle = love.graphics.rectangle
+local setLineWidth = love.graphics.setLineWidth
+local printf = love.graphics.printf
+local print = love.graphics.print
+
 local GRID_SIZE = 40
 
 local Menu = {}
@@ -81,7 +92,7 @@ function Menu:createLevelButtons()
     self.levelButtons = {}
 
     for i = 1, self.levelManager:getLevelCount() do
-        table.insert(self.levelButtons, {
+        table_insert(self.levelButtons, {
             text = "Level " .. i,
             subtext = self.levelManager:getLevelName(i),
             action = "level " .. i,
@@ -92,7 +103,7 @@ function Menu:createLevelButtons()
         })
     end
 
-    table.insert(self.levelButtons, {
+    table_insert(self.levelButtons, {
         text = "Back",
         action = "back_to_menu",
         width = 200,
@@ -123,7 +134,7 @@ function Menu:updateLevelButtonPositions()
             button.x = (self.screenWidth - button.width) / 2
             button.y = self.screenHeight - 100
         else
-            local row = math.floor((i - 1) / buttonsPerRow)
+            local row = math_floor((i - 1) / buttonsPerRow)
             local col = (i - 1) % buttonsPerRow
             button.x = startX + col * (200 + buttonSpacing)
             button.y = startY + row * 80
@@ -154,10 +165,9 @@ function Menu:update(dt, screenWidth, screenHeight)
     self.title.beamX = (self.title.beamX + self.title.beamSpeed * dt) % self.screenWidth
 end
 
--- HSV to RGB conversion helper
 local function hsvToRgb(h, s, v)
     local c = v * s
-    local x = c * (1 - math.abs((h / 60) % 2 - 1))
+    local x = c * (1 - math_abs((h / 60) % 2 - 1))
     local m = v - c
     local r, g, b
     if h < 60 then
@@ -177,7 +187,7 @@ local function hsvToRgb(h, s, v)
 end
 
 function Menu:draw(screenWidth, screenHeight, state)
-    -- Fancy animated title
+    -- Animated title
     local r, g, b = hsvToRgb(self.title.hue, 0.8, 1.0)
     love.graphics.setFont(self.largeFont)
     love.graphics.push()
@@ -187,18 +197,18 @@ function Menu:draw(screenWidth, screenHeight, state)
     -- Outer glow layers
     for i = 3, 1, -1 do
         local alpha = 0.1 * i
-        love.graphics.setColor(r, g, b, alpha)
-        love.graphics.printf(self.title.text, -screenWidth / 2, -self.largeFont:getHeight() / 2, screenWidth, "center")
+        setColor(r, g, b, alpha)
+        printf(self.title.text, -screenWidth / 2, -self.largeFont:getHeight() / 2, screenWidth, "center")
     end
 
     -- Core bright text
-    love.graphics.setColor(r, g, b)
-    love.graphics.printf(self.title.text, -screenWidth / 2, -self.largeFont:getHeight() / 2, screenWidth, "center")
+    setColor(r, g, b)
+    printf(self.title.text, -screenWidth / 2, -self.largeFont:getHeight() / 2, screenWidth, "center")
 
     -- Laser beam sweep
     local beamWidth = 10
-    love.graphics.setColor(1, 1, 1, 0.15)
-    love.graphics.rectangle("fill", self.title.beamX - beamWidth / 2, -self.largeFont:getHeight(), beamWidth,
+    setColor(1, 1, 1, 0.15)
+    rectangle("fill", self.title.beamX - beamWidth / 2, -self.largeFont:getHeight(), beamWidth,
         self.largeFont:getHeight() * 2)
 
     love.graphics.pop()
@@ -206,32 +216,31 @@ function Menu:draw(screenWidth, screenHeight, state)
     if state == "menu" then
         self:drawMenuButtons()
         -- Draw tagline
-        love.graphics.setColor(0.8, 0.9, 1.0)
+        setColor(0.8, 0.9, 1.0)
         love.graphics.setFont(self.smallFont)
-        love.graphics.printf("Laser Reflection Puzzle Game",
+        printf("Laser Reflection Puzzle Game",
             0, screenHeight / 3 + 30, screenWidth, "center")
     elseif state == "level_select" then
         self:drawLevelSelect()
     end
 
     -- Draw copyright
-    love.graphics.setColor(1, 1, 1, 0.5)
+    setColor(1, 1, 1, 0.5)
     love.graphics.setFont(self.smallFont)
-    love.graphics.printf("Luminex - Copyright (c) 2025 Jericho Crosby (Chalwk)", 10, screenHeight - 25, screenWidth - 20,
-        "right")
+    printf("Luminex - Copyright (c) 2025 Jericho Crosby (Chalwk)", 10, screenHeight - 25, screenWidth - 20, "right")
 end
 
 function Menu:drawLevelSelect()
-    love.graphics.setColor(1, 1, 1)
+    setColor(1, 1, 1)
     love.graphics.setFont(self.mediumFont)
 
     for _, button in ipairs(self.levelButtons) do
         self:drawButton(button)
         -- Draw level name for level buttons
         if button.subtext then
-            love.graphics.setColor(0.8, 0.9, 1.0, 0.8)
+            setColor(0.8, 0.9, 1.0, 0.8)
             love.graphics.setFont(self.smallFont)
-            love.graphics.printf(button.subtext, button.x, button.y + 37, button.width, "center")
+            printf(button.subtext, button.x, button.y + 37, button.width, "center")
         end
     end
 end
@@ -243,21 +252,21 @@ function Menu:drawMenuButtons()
 end
 
 function Menu:drawButton(button)
-    love.graphics.setColor(0.2, 0.2, 0.4, 0.9)
-    love.graphics.rectangle("fill", button.x, button.y, button.width, button.height, 10, 10)
+    setColor(0.2, 0.2, 0.4, 0.9)
+    rectangle("fill", button.x, button.y, button.width, button.height, 10, 10)
 
-    love.graphics.setColor(0.3, 0.8, 1.0)
-    love.graphics.setLineWidth(2)
-    love.graphics.rectangle("line", button.x, button.y, button.width, button.height, 10, 10)
+    setColor(0.3, 0.8, 1.0)
+    setLineWidth(2)
+    rectangle("line", button.x, button.y, button.width, button.height, 10, 10)
 
-    love.graphics.setColor(1, 1, 1)
+    setColor(1, 1, 1)
     love.graphics.setFont(self.smallFont)
     local textWidth = self.smallFont:getWidth(button.text)
     local textHeight = self.smallFont:getHeight()
-    love.graphics.print(button.text, button.x + (button.width - textWidth) / 2,
+    print(button.text, button.x + (button.width - textWidth) / 2,
         button.y + (button.height - textHeight) / 2)
 
-    love.graphics.setLineWidth(1)
+    setLineWidth(1)
 end
 
 function Menu:handleClick(x, y, state)

@@ -60,6 +60,7 @@ local line = love.graphics.line
 local circle = love.graphics.circle
 local setColor = love.graphics.setColor
 local rectangle = love.graphics.rectangle
+local setLineWidth = love.graphics.setLineWidth
 
 local Tile = {}
 Tile.__index = Tile
@@ -203,9 +204,9 @@ function Tile:drawLightBulb(x, y, gridSize, isPowered)
             centerX - bulbRadius * 0.1, centerY + bulbRadius * 0.1,
             centerX + bulbRadius * 0.3, centerY - bulbRadius * 0.1
         }
-        love.graphics.setLineWidth(2)
-        love.graphics.line(filamentPoints)
-        love.graphics.setLineWidth(1)
+        setLineWidth(2)
+        line(filamentPoints)
+        setLineWidth(1)
 
         -- Additional inner glow
         setColor(1.0, 1.0, 0.8, 0.4)
@@ -226,8 +227,8 @@ function Tile:drawLightBulb(x, y, gridSize, isPowered)
             centerX - bulbRadius * 0.1, centerY + bulbRadius * 0.1,
             centerX + bulbRadius * 0.3, centerY - bulbRadius * 0.1
         }
-        love.graphics.setLineWidth(1)
-        love.graphics.line(filamentPoints)
+        setLineWidth(1)
+        line(filamentPoints)
     end
 
     -- Base details
@@ -238,7 +239,7 @@ function Tile:drawLightBulb(x, y, gridSize, isPowered)
     setColor(0.4, 0.4, 0.4)
     for i = 1, 3 do
         local threadY = centerY + bulbRadius - baseHeight / 3 + (i * baseHeight / 4)
-        love.graphics.line(centerX - baseWidth / 2, threadY, centerX + baseWidth / 2, threadY)
+        line(centerX - baseWidth / 2, threadY, centerX + baseWidth / 2, threadY)
     end
 end
 
@@ -262,7 +263,7 @@ function Tile:draw(offsetX, offsetY, gridSize, isPowered)
     local centerX = x + gridSize / 2
     local centerY = y + gridSize / 2
 
-    love.graphics.setLineWidth(3)
+    setLineWidth(3)
 
     if isPowered then
         setColor(0.3, 0.8, 1.0) -- Powered - blue
@@ -291,7 +292,7 @@ function Tile:draw(offsetX, offsetY, gridSize, isPowered)
         self:drawLightBulb(x, y, gridSize, isPowered)
     end
 
-    love.graphics.setLineWidth(1)
+    setLineWidth(1)
 end
 
 return Tile

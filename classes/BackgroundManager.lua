@@ -2,11 +2,21 @@
 -- License: MIT
 -- Copyright (c) 2025 Jericho Crosby (Chalwk)
 
+local line = love.graphics.line
+local circle = love.graphics.circle
+local setColor = love.graphics.setColor
+local rectangle = love.graphics.rectangle
+local setLineWidth = love.graphics.setLineWidth
+
+local ipairs = ipairs
+
 local math_pi = math.pi
 local math_sin = math.sin
 local math_cos = math.cos
 local math_random = math.random
+
 local table_insert = table.insert
+local table_remove = table.remove
 
 local BackgroundManager = {}
 BackgroundManager.__index = BackgroundManager
@@ -78,7 +88,7 @@ function BackgroundManager:update(dt)
         particle.life = particle.life - dt
 
         if particle.life <= 0 then
-            table.remove(self.particles, i)
+            table_remove(self.particles, i)
         else
             particle.x = particle.x + math_cos(particle.angle) * particle.speed * dt
             particle.y = particle.y + math_sin(particle.angle) * particle.speed * dt
@@ -115,35 +125,35 @@ function BackgroundManager:draw(screenWidth, screenHeight, gameState)
     local time = love.timer.getTime()
 
     -- Deep space background
-    love.graphics.setColor(0.05, 0.02, 0.08)
-    love.graphics.rectangle("fill", 0, 0, screenWidth, screenHeight)
+    setColor(0.05, 0.02, 0.08)
+    rectangle("fill", 0, 0, screenWidth, screenHeight)
 
     -- Laser grid pattern
-    love.graphics.setColor(0.15, 0.05, 0.25, 0.3)
+    setColor(0.15, 0.05, 0.25, 0.3)
     local gridSize = 80
     for x = 0, screenWidth, gridSize do
-        love.graphics.line(x, 0, x, screenHeight)
+        line(x, 0, x, screenHeight)
     end
     for y = 0, screenHeight, gridSize do
-        love.graphics.line(0, y, screenWidth, y)
+        line(0, y, screenWidth, y)
     end
 
     -- Draw laser beams
     for _, beam in ipairs(self.laserBeams) do
         local alpha = (math_sin(beam.phase) + 1) * 0.15 + 0.1
-        love.graphics.setColor(beam.color[1], beam.color[2], beam.color[3], alpha)
-        love.graphics.setLineWidth(beam.width)
-        love.graphics.line(beam.x1, beam.y1, beam.x2, beam.y2)
+        setColor(beam.color[1], beam.color[2], beam.color[3], alpha)
+        setLineWidth(beam.width)
+        line(beam.x1, beam.y1, beam.x2, beam.y2)
     end
-    love.graphics.setLineWidth(1)
+    setLineWidth(1)
 
     -- Glowing nodes at grid intersections
-    love.graphics.setColor(0.4, 0.1, 0.8, 0.4)
+    setColor(0.4, 0.1, 0.8, 0.4)
     for x = gridSize / 2, screenWidth, gridSize do
         for y = gridSize / 2, screenHeight, gridSize do
             local pulse = (math_sin(time * 2 + x * 0.01 + y * 0.01) + 1) * 0.5
-            love.graphics.setColor(0.3, 0.1, 0.6, 0.2 + pulse * 0.2)
-            love.graphics.circle("fill", x, y, 2 + pulse * 2)
+            setColor(0.3, 0.1, 0.6, 0.2 + pulse * 0.2)
+            circle("fill", x, y, 2 + pulse * 2)
         end
     end
 
@@ -154,20 +164,20 @@ function BackgroundManager:draw(screenWidth, screenHeight, gameState)
         local currentSize = particle.size * (0.7 + pulse * 0.3)
         local alpha = lifeProgress * (0.2 + pulse * 0.3)
 
-        love.graphics.setColor(particle.color[1], particle.color[2], particle.color[3], alpha)
+        setColor(particle.color[1], particle.color[2], particle.color[3], alpha)
 
         if particle.type == 1 then
-            love.graphics.circle("fill", particle.x, particle.y, currentSize)
+            circle("fill", particle.x, particle.y, currentSize)
         else
-            love.graphics.rectangle("fill", particle.x - currentSize, particle.y - currentSize,
+            rectangle("fill", particle.x - currentSize, particle.y - currentSize,
                 currentSize * 2, currentSize * 2)
         end
     end
 
     -- Central glow effect
     local centerPulse = (math_sin(time * 1.5) + 1) * 0.2 + 0.3
-    love.graphics.setColor(0.3, 0.1, 0.5, centerPulse * 0.1)
-    love.graphics.circle("fill", screenWidth / 2, screenHeight / 2, 200)
+    setColor(0.3, 0.1, 0.5, centerPulse * 0.1)
+    circle("fill", screenWidth / 2, screenHeight / 2, 200)
 end
 
 return BackgroundManager
