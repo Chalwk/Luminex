@@ -5,6 +5,13 @@
 local ipairs = ipairs
 local table_insert = table.insert
 
+local opposites = {
+    up = "down",
+    down = "up",
+    left = "right",
+    right = "left"
+}
+
 local LevelManager = {}
 LevelManager.__index = LevelManager
 
@@ -369,12 +376,6 @@ function LevelManager:isLevelComplete()
 end
 
 function LevelManager:getOppositeDirection(dir)
-    local opposites = {
-        up = "down",
-        down = "up",
-        left = "right",
-        right = "left"
-    }
     return opposites[dir]
 end
 
