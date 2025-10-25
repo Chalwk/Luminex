@@ -14,6 +14,7 @@ local rectangle = love.graphics.rectangle
 local setColor = love.graphics.setColor
 
 local LevelManager = require("classes/LevelManager")
+local SoundManager = require("classes/SoundManager")
 
 local Game = {}
 Game.__index = Game
@@ -35,28 +36,7 @@ function Game.new()
     instance.particles = {}
     instance.effects = {}
 
-    local win = love.audio.newSource("assets/sounds/win.mp3", "static")
-    local rotate = love.audio.newSource("assets/sounds/rotate.mp3", "static")
-    local connect = love.audio.newSource("assets/sounds/connect.mp3", "static")
-
-    -- Simple sound placeholders - you can replace with actual files
-    instance.sounds = {
-        win = {
-            play = function()
-                love.audio.play(win)
-            end
-        },
-        rotate = {
-            play = function()
-                love.audio.play(rotate)
-            end
-        },
-        connect = {
-            play = function()
-                love.audio.play(connect)
-            end
-        }
-    }
+    instance.sounds = SoundManager.new()
 
     return instance
 end
@@ -81,7 +61,7 @@ end
 
 function Game:loadLevel(levelNumber)
     self.currentLevel = levelNumber
-    self.levelManager = LevelManager.new(self.gridSize)
+    self.levelManager = LevelManager.new()
     self.levelManager:loadLevel(levelNumber)
     self.levelComplete = false
     self.moves = 0
@@ -102,7 +82,7 @@ function Game:update(dt)
     -- Check level completion
     if not self.levelComplete and self.levelManager:isLevelComplete() then
         self.levelComplete = true
-        self.sounds.win:play()
+        self.sounds:play("win")
         self:createWinEffect()
     end
 
@@ -129,7 +109,7 @@ function Game:checkTargetConnections()
             -- This target was just connected
             -- Only play sound if not all targets are powered (not the winning move)
             if not self.levelManager:isLevelComplete() then
-                self.sounds.connect:play()
+                self.sounds:play("connect")
             end
         end
     end
@@ -305,7 +285,7 @@ function Game:handleTouch(x, y, button)
         local clockwise = (button == 1) -- Left click = clockwise, right click = counter-clockwise
         if self.levelManager:rotateTile(gridX, gridY, clockwise) then
             self.moves = self.moves + 1
-            self.sounds.rotate:play()
+            self.sounds:play("rotate")
         end
     end
 end

@@ -17,7 +17,7 @@ LevelManager.__index = LevelManager
 
 function LevelManager.new(gridSize)
     local instance = setmetatable({}, LevelManager)
-    instance.gridSize = gridSize
+    instance.gridSize = 40
     instance.levels = {}
     instance:initLevels()
     return instance

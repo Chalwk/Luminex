@@ -96,7 +96,7 @@ function Menu:createOptionsButtons()
 end
 
 function Menu:createLevelButtons()
-    self.levelManager = require("classes/LevelManager").new(40)
+    self.levelManager = require("classes/LevelManager").new()
     self.levelButtons = {}
 
     for i = 1, self.levelManager:getLevelCount() do
@@ -206,7 +206,7 @@ function Menu:draw(screenWidth, screenHeight, state)
     -- Draw copyright
     love.graphics.setColor(1, 1, 1, 0.5)
     love.graphics.setFont(self.smallFont)
-    love.graphics.printf("Luminex © 2024", 10, screenHeight - 25, screenWidth - 20, "right")
+    love.graphics.printf("Luminex - Copyright (c) 2025 Jericho Crosby (Chalwk)", 10, screenHeight - 25, screenWidth - 20, "right")
 end
 
 function Menu:drawOptionsMenu()
