@@ -123,7 +123,7 @@ function LevelManager:initLevels()
                 { "empty", "source",   "empty",    "empty",      "empty" },
                 { "empty", "cross",    "straight", "t_junction", "target" },
                 { "empty", "straight", "empty",    "corner",     "corner" },
-                { "empty", "target",   "empty",    "corner",     "straight" },
+                { "empty", "target",   "empty",    "corner",     "corner" },
                 { "empty", "empty",    "empty",    "target",     "corner" }
             },
             rotations = {
@@ -171,7 +171,7 @@ function LevelManager:initLevels()
                 { "source", "straight", "corner",   "corner",   "corner",   "corner" },
                 { "empty",  "empty",    "straight", "cross",    "straight", "straight" },
                 { "empty",  "empty",    "corner",   "straight", "target",   "empty" },
-                { "empty",  "empty",    "corner",   "corner",   "corner",   "straight" },
+                { "empty",  "empty",    "corner",   "corner",   "corner",   "corner" },
                 { "empty",  "empty",    "empty",    "empty",    "empty",    "target" }
             },
             rotations = {
@@ -186,8 +186,8 @@ function LevelManager:initLevels()
             grid = {
                 { "source", "straight", "t_junction", "straight", "t_junction", "target" },
                 { "empty",  "empty",    "corner",     "empty",    "corner",     "empty" },
-                { "source", "straight", "cross",      "straight", "t_junction", "target" },
-                { "empty",  "empty",    "corner",     "empty",    "corner",     "empty" },
+                { "source", "straight", "straight",   "cross",    "t_junction", "target" },
+                { "empty",  "empty",    "corner",     "corner",   "straight",     "empty" },
                 { "empty",  "empty",    "target",     "empty",    "target",     "empty" },
                 { "empty",  "empty",    "empty",      "empty",    "empty",      "empty" }
             },
