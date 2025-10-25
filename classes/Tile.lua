@@ -2,7 +2,7 @@
 -- License: MIT
 -- Copyright (c) 2025 Jericho Crosby (Chalwk)
 
-local bulb_colors = {
+local BULB_COLORS = {
     [1] = {
         bulbColor = { 0.9, 0.9, 0.8, 0.3 },
         glowColor = { 1.0, 0.9, 0.6 },
@@ -23,6 +23,35 @@ local bulb_colors = {
         glowColor = { 0.8, 0.6, 1.0 },
         filamentColor = { 1.0, 0.8, 1.0 }
     }
+}
+
+local CONNECTIONS = {
+    straight = {
+        [0] = { "up", "down" },
+        [1] = { "left", "right" },
+        [2] = { "up", "down" },
+        [3] = { "left", "right" },
+    },
+    corner = {
+        [0] = { "up", "right" },
+        [1] = { "right", "down" },
+        [2] = { "down", "left" },
+        [3] = { "left", "up" },
+    },
+    t_junction = {
+        [0] = { "up", "right", "down" },
+        [1] = { "right", "down", "left" },
+        [2] = { "down", "left", "up" },
+        [3] = { "left", "up", "right" },
+    },
+    cross = { [0] = { "up", "right", "down", "left" } },
+    source = {
+        [0] = { "right" },
+        [1] = { "down" },
+        [2] = { "left" },
+        [3] = { "up" },
+    },
+    target = { [0] = { "up", "right", "down", "left" } }
 }
 
 local ipairs = ipairs
@@ -62,54 +91,9 @@ function Tile:rotate(clockwise)
 end
 
 function Tile:getConnections()
-    -- Returns which sides are connected based on tile type and rotation
-    local connections = {}
-
-    if self.type == "straight" then
-        if self.rotation % 2 == 0 then
-            connections = { "up", "down" }    -- Vertical
-        else
-            connections = { "left", "right" } -- Horizontal
-        end
-    elseif self.type == "corner" then
-        if self.rotation == 0 then
-            connections = { "up", "right" }
-        elseif self.rotation == 1 then
-            connections = { "right", "down" }
-        elseif self.rotation == 2 then
-            connections = { "down", "left" }
-        else
-            connections = { "left", "up" }
-        end
-    elseif self.type == "t_junction" then
-        if self.rotation == 0 then
-            connections = { "up", "right", "down" }
-        elseif self.rotation == 1 then
-            connections = { "right", "down", "left" }
-        elseif self.rotation == 2 then
-            connections = { "down", "left", "up" }
-        else
-            connections = { "left", "up", "right" }
-        end
-    elseif self.type == "cross" then
-        connections = { "up", "right", "down", "left" }
-    elseif self.type == "source" then
-        -- Source has one output direction
-        if self.rotation == 0 then
-            connections = { "right" } -- Output to right
-        elseif self.rotation == 1 then
-            connections = { "down" }
-        elseif self.rotation == 2 then
-            connections = { "left" }
-        else
-            connections = { "up" }
-        end
-    elseif self.type == "target" then
-        -- Target accepts from all directions
-        connections = { "up", "right", "down", "left" }
-    end
-
-    return connections
+    local t = CONNECTIONS[self.type]
+    if not t then return {} end
+    return t[self.rotation % 4] or t[0] or {}
 end
 
 function Tile:drawLaserGenerator(x, y, gridSize, isPowered)
@@ -195,7 +179,7 @@ function Tile:drawLightBulb(x, y, gridSize, isPowered)
     local baseWidth = gridSize * 0.3
     local baseHeight = gridSize * 0.15
 
-    local bulb_type = bulb_colors[self.bulbType]
+    local bulb_type = BULB_COLORS[self.bulbType]
     local bulbColor, glowColor, filamentColor = bulb_type.bulbColor, bulb_type.glowColor, bulb_type.filamentColor
 
     -- Metal base/socket
