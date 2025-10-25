@@ -304,8 +304,10 @@ function LevelEditor:drawLightBulb(x, y, bulbType)
     local bulbRadius = self.gridSize * 0.25
 
     local colors = self.helpers.BULB_COLORS
-    local color = colors[bulbType] or colors[1]
-    setColor(color[1], color[2], color[3], 0.8)
+    local bulbData = colors[bulbType] or colors[1]
+
+    local bulbColor = bulbData.bulbColor
+    setColor(bulbColor[1], bulbColor[2], bulbColor[3], bulbColor[4] or 0.8)
     circle("fill", centerX, centerY, bulbRadius)
 
     -- Bulb type indicator

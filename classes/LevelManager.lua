@@ -27,7 +27,7 @@ function LevelManager:initLevels()
                 { "empty",  "empty",    "empty",    "empty",    "empty" }
             },
             rotations = {
-                0, 0, 0, 0, 0,
+                3, 0, 0, 0, 0,
                 0, 0, 0, 0, 0,
                 0, 0, 0, 0, 0 },
             bulbTypes = { 1 }
@@ -35,28 +35,40 @@ function LevelManager:initLevels()
         { -- Level 2: Right angle (5x3)
             name = "The Corner",
             grid = {
+                { "empty",  "empty",    "empty",  "empty",    "empty" },
                 { "source", "straight", "corner", "empty",    "empty" },
                 { "empty",  "empty",    "corner", "straight", "target" },
+                { "empty",  "empty",    "empty",  "empty",    "empty" },
                 { "empty",  "empty",    "empty",  "empty",    "empty" }
             },
             rotations = {
-                1, 0, 0, 0, 0,
+                0, 0, 0, 0, 0,
+                3, 0, 0, 0, 0,
+                0, 0, 2, 0, 0,
                 0, 0, 0, 0, 0,
                 0, 0, 0, 0, 0 },
-            bulbTypes = { 2 }
+            bulbTypes = { 1 }
         },
         { -- Level 3: Split path (5x3)
             name = "Double Trouble",
             grid = {
-                { "source", "straight", "t_junction", "straight", "target" },
-                { "empty",  "empty",    "corner",     "corner",   "empty" },
-                { "empty",  "empty",    "empty",      "corner",   "target" }
+                { "empty", "empty",  "empty",    "empty",  "empty",    "empty",  "empty" },
+                { "empty", "source", "straight", "corner", "corner",   "corner", "empty" },
+                { "empty", "empty",  "empty",    "corner", "corner",   "target", "empty" },
+                { "empty", "empty",  "empty",    "corner", "straight", "empty",  "empty" },
+                { "empty", "empty",  "empty",    "empty",  "empty",    "empty",  "empty" },
+                { "empty", "empty",  "empty",    "empty",  "empty",    "empty",  "empty" },
+                { "empty", "empty",  "empty",    "empty",  "empty",    "empty",  "empty" }
             },
             rotations = {
-                1, 0, 0, 0, 0,
-                0, 0, 0, 0, 0,
-                0, 0, 0, 0, 0 },
-            bulbTypes = { 1, 3 }
+                0, 0, 0, 0, 0, 0, 0,
+                0, 3, 2, 3, 2, 3, 0,
+                0, 0, 0, 2, 2, 0, 0,
+                0, 0, 0, 1, 0, 0, 0,
+                0, 0, 0, 0, 0, 0, 0,
+                0, 0, 0, 0, 0, 0, 0,
+                0, 0, 0, 0, 0, 0, 0 },
+            bulbTypes = { 1 }
         },
         { -- Level 4: Crossroads (4x4)
             name = "Crossroads",
@@ -68,7 +80,7 @@ function LevelManager:initLevels()
             },
             rotations = {
                 1, 0, 0, 0,
-                0, 0, 0, 0,
+                3, 0, 0, 0,
                 0, 1, 0, 0,
                 0, 0, 0, 0 },
             bulbTypes = { 2, 4 }
@@ -82,7 +94,7 @@ function LevelManager:initLevels()
                 { "empty",  "empty",    "empty",    "empty",  "empty" }
             },
             rotations = {
-                0, 0, 0, 0, 0,
+                3, 0, 0, 0, 0,
                 0, 0, 0, 0, 0,
                 0, 0, 0, 0, 0,
                 0, 0, 0, 0, 0 },
@@ -97,9 +109,9 @@ function LevelManager:initLevels()
                 { "empty",  "empty",    "empty",      "empty",    "empty" }
             },
             rotations = {
+                3, 0, 0, 0, 0,
                 0, 0, 0, 0, 0,
-                0, 0, 0, 0, 0,
-                0, 0, 0, 0, 0,
+                3, 0, 0, 0, 0,
                 0, 0, 0, 0, 0 },
             bulbTypes = { 1, 4 }
         },
@@ -112,7 +124,7 @@ function LevelManager:initLevels()
                 { "empty",  "empty",    "empty",    "corner",     "corner" }
             },
             rotations = {
-                0, 0, 0, 0, 0,
+                3, 0, 0, 0, 0,
                 0, 0, 0, 0, 0,
                 0, 0, 0, 0, 0,
                 0, 0, 0, 0, 0 },
@@ -128,7 +140,7 @@ function LevelManager:initLevels()
                 { "empty", "empty",    "empty",    "target",     "corner" }
             },
             rotations = {
-                0, 0, 0, 0, 0,
+                0, 3, 0, 0, 0,
                 0, 0, 0, 0, 0,
                 0, 1, 0, 1, 0,
                 0, 0, 0, 0, 1,
@@ -145,7 +157,7 @@ function LevelManager:initLevels()
                 { "empty",  "empty",    "empty",    "empty",    "empty" }
             },
             rotations = {
-                0, 0, 0, 0, 0,
+                3, 0, 0, 0, 0,
                 0, 0, 0, 0, 0,
                 0, 0, 0, 0, 0,
                 0, 0, 0, 0, 0,
@@ -162,9 +174,9 @@ function LevelManager:initLevels()
                 { "empty",  "empty",    "target",     "empty",    "empty",      "empty" }
             },
             rotations = {
+                3, 0, 0, 0, 0, 0,
                 0, 0, 0, 0, 0, 0,
-                0, 0, 0, 0, 0, 0,
-                0, 0, 0, 0, 0, 0,
+                3, 0, 0, 0, 0, 0,
                 0, 0, 0, 0, 0, 0,
                 0, 0, 0, 0, 0, 0 },
             bulbTypes = { 1, 3, 4 }
@@ -179,7 +191,7 @@ function LevelManager:initLevels()
                 { "empty",  "empty",    "empty",    "empty",    "empty",    "target" }
             },
             rotations = {
-                0, 0, 0, 0, 0, 0,
+                3, 0, 0, 0, 0, 0,
                 0, 0, 0, 0, 0, 0,
                 0, 0, 0, 0, 0, 0,
                 0, 0, 0, 0, 0, 0,
@@ -197,9 +209,9 @@ function LevelManager:initLevels()
                 { "empty",  "empty",    "empty",      "empty",    "empty",      "empty" }
             },
             rotations = {
+                3, 0, 0, 0, 0, 0,
                 0, 0, 0, 0, 0, 0,
-                0, 0, 0, 0, 0, 0,
-                0, 0, 0, 0, 0, 0,
+                3, 0, 0, 0, 0, 0,
                 0, 0, 0, 0, 0, 0,
                 0, 0, 0, 0, 0, 0,
                 0, 0, 0, 0, 0, 0 },
@@ -215,9 +227,9 @@ function LevelManager:initLevels()
                 { "target", "straight", "cross",    "straight", "cross",    "target" }
             },
             rotations = {
+                3, 0, 0, 0, 0, 0,
                 0, 0, 0, 0, 0, 0,
-                0, 0, 0, 0, 0, 0,
-                0, 0, 0, 0, 0, 0,
+                3, 0, 0, 0, 0, 0,
                 0, 0, 0, 0, 0, 0,
                 0, 0, 0, 0, 0, 0,
                 0, 0, 0, 0, 0, 0 },
@@ -234,11 +246,11 @@ function LevelManager:initLevels()
                 { "empty",  "empty",    "empty",      "empty",    "empty",      "empty",    "empty" }
             },
             rotations = {
+                3, 0, 0, 0, 0, 0, 0,
                 0, 0, 0, 0, 0, 0, 0,
+                3, 0, 0, 0, 0, 0, 0,
                 0, 0, 0, 0, 0, 0, 0,
-                0, 0, 0, 0, 0, 0, 0,
-                0, 0, 0, 0, 0, 0, 0,
-                0, 0, 0, 0, 0, 0, 0,
+                3, 0, 0, 0, 0, 0, 0,
                 0, 0, 0, 0, 0, 0, 0 },
             bulbTypes = { 1, 2, 3 }
         },
@@ -254,11 +266,11 @@ function LevelManager:initLevels()
                 { "target", "straight", "cross",    "straight", "cross",    "straight", "cross",    "target" }
             },
             rotations = {
+                3, 0, 0, 0, 0, 0, 0, 0,
                 0, 0, 0, 0, 0, 0, 0, 0,
+                3, 0, 0, 0, 0, 0, 0, 0,
                 0, 0, 0, 0, 0, 0, 0, 0,
-                0, 0, 0, 0, 0, 0, 0, 0,
-                0, 0, 0, 0, 0, 0, 0, 0,
-                0, 0, 0, 0, 0, 0, 0, 0,
+                3, 0, 0, 0, 0, 0, 0, 0,
                 0, 0, 0, 0, 0, 0, 0, 0,
                 0, 0, 0, 0, 0, 0, 0, 0 },
             bulbTypes = { 1, 2, 3, 4, 1 }
