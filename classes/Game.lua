@@ -61,7 +61,7 @@ end
 
 function Game:loadLevel(levelNumber)
     self.currentLevel = levelNumber
-    self.levelManager = LevelManager.new()
+    self.levelManager = LevelManager.new(self.gridSize)
     self.levelManager:loadLevel(levelNumber)
     self.levelComplete = false
     self.moves = 0
