@@ -43,7 +43,7 @@ end
 
 function love.update(dt)
     updateScreenSize()
-    if gameState == "menu" or gameState == "options" or gameState == "level_select" then
+    if gameState == "menu" or gameState == "level_select" then
         menu:update(dt, screenWidth, screenHeight)
     elseif gameState == "playing" then
         game:update(dt)
@@ -55,7 +55,7 @@ end
 function love.draw()
     backgroundManager:draw(screenWidth, screenHeight, gameState)
 
-    if gameState == "menu" or gameState == "options" or gameState == "level_select" then
+    if gameState == "menu" or gameState == "level_select" then
         menu:draw(screenWidth, screenHeight, gameState)
     elseif gameState == "playing" then
         game:draw()
@@ -69,17 +69,10 @@ function love.mousepressed(x, y, button, istouch)
             if action == "start" then
                 gameState = "playing"
                 game:loadLevel(1) -- Start with level 1
-            elseif action == "options" then
-                gameState = "options"
+            elseif action == "level_select" then
+                gameState = "level_select"
             elseif action == "quit" then
                 love.event.quit()
-            end
-        elseif gameState == "options" then
-            local action = menu:handleClick(x, y, "options")
-            if action == "level_select" then
-                gameState = "level_select"
-            elseif action == "back" then
-                gameState = "menu"
             end
         elseif gameState == "level_select" then
             local action = menu:handleClick(x, y, "level_select")
@@ -87,8 +80,8 @@ function love.mousepressed(x, y, button, istouch)
                 local level = tonumber(action:sub(7))
                 gameState = "playing"
                 game:loadLevel(level)
-            elseif action == "back_to_options" then
-                gameState = "options"
+            elseif action == "back_to_menu" then
+                gameState = "menu"
             end
         elseif gameState == "playing" then
             game:handleTouch(x, y, button)
@@ -101,8 +94,6 @@ function love.keypressed(key)
         if gameState == "playing" then
             gameState = "menu"
         elseif gameState == "level_select" then
-            gameState = "options"
-        elseif gameState == "options" then
             gameState = "menu"
         else
             love.event.quit()

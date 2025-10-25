@@ -18,12 +18,15 @@ function Menu.new()
         scaleDirection = 1,
         scaleSpeed = 0.3,
         minScale = 0.95,
-        maxScale = 1.05
+        maxScale = 1.05,
+        hue = 0,         -- for color cycling
+        hueSpeed = 60,   -- degrees per second
+        beamX = 0,       -- beam sweep position
+        beamSpeed = 250, -- pixels per second
     }
 
     instance:createMenuButtons()
     instance:createLevelButtons()
-    instance:createOptionsButtons()
 
     return instance
 end
@@ -40,7 +43,6 @@ function Menu:setScreenSize(width, height)
     self.screenHeight = height
     self:updateButtonPositions()
     self:updateLevelButtonPositions()
-    self:updateOptionsButtonPositions()
 end
 
 function Menu:createMenuButtons()
@@ -54,8 +56,8 @@ function Menu:createMenuButtons()
             y = 0
         },
         {
-            text = "Options",
-            action = "options",
+            text = "Level Select",
+            action = "level_select",
             width = 250,
             height = 60,
             x = 0,
@@ -72,29 +74,6 @@ function Menu:createMenuButtons()
     }
 
     self:updateButtonPositions()
-end
-
-function Menu:createOptionsButtons()
-    self.optionsButtons = {
-        {
-            text = "Level Select",
-            action = "level_select",
-            width = 250,
-            height = 60,
-            x = 0,
-            y = 0
-        },
-        {
-            text = "Back",
-            action = "back",
-            width = 250,
-            height = 60,
-            x = 0,
-            y = 0
-        }
-    }
-
-    self:updateOptionsButtonPositions()
 end
 
 function Menu:createLevelButtons()
@@ -115,7 +94,7 @@ function Menu:createLevelButtons()
 
     table.insert(self.levelButtons, {
         text = "Back",
-        action = "back_to_options",
+        action = "back_to_menu",
         width = 200,
         height = 50,
         x = 0,
@@ -133,22 +112,14 @@ function Menu:updateButtonPositions()
     end
 end
 
-function Menu:updateOptionsButtonPositions()
-    local startY = self.screenHeight / 2
-    for i, button in ipairs(self.optionsButtons) do
-        button.x = (self.screenWidth - button.width) / 2
-        button.y = startY + (i - 1) * 80
-    end
-end
-
 function Menu:updateLevelButtonPositions()
     local buttonsPerRow = 3
     local buttonSpacing = 20
     local startX = (self.screenWidth - (buttonsPerRow * 200 + (buttonsPerRow - 1) * buttonSpacing)) / 2
-    local startY = self.screenHeight / 4
+    local startY = self.screenHeight / 2.8
 
     for i, button in ipairs(self.levelButtons) do
-        if button.action == "back_to_options" then
+        if button.action == "back_to_menu" then
             button.x = (self.screenWidth - button.width) / 2
             button.y = self.screenHeight - 100
         else
@@ -166,12 +137,10 @@ function Menu:update(dt, screenWidth, screenHeight)
         self.screenHeight = screenHeight
         self:updateButtonPositions()
         self:updateLevelButtonPositions()
-        self:updateOptionsButtonPositions()
     end
 
-    -- Update title animation
+    -- Pulsing scale
     self.title.scale = self.title.scale + self.title.scaleDirection * self.title.scaleSpeed * dt
-
     if self.title.scale > self.title.maxScale then
         self.title.scale = self.title.maxScale
         self.title.scaleDirection = -1
@@ -179,17 +148,59 @@ function Menu:update(dt, screenWidth, screenHeight)
         self.title.scale = self.title.minScale
         self.title.scaleDirection = 1
     end
+
+    -- Animate hue and beam
+    self.title.hue = (self.title.hue + self.title.hueSpeed * dt) % 360
+    self.title.beamX = (self.title.beamX + self.title.beamSpeed * dt) % self.screenWidth
+end
+
+-- HSV to RGB conversion helper
+local function hsvToRgb(h, s, v)
+    local c = v * s
+    local x = c * (1 - math.abs((h / 60) % 2 - 1))
+    local m = v - c
+    local r, g, b
+    if h < 60 then
+        r, g, b = c, x, 0
+    elseif h < 120 then
+        r, g, b = x, c, 0
+    elseif h < 180 then
+        r, g, b = 0, c, x
+    elseif h < 240 then
+        r, g, b = 0, x, c
+    elseif h < 300 then
+        r, g, b = x, 0, c
+    else
+        r, g, b = c, 0, x
+    end
+    return r + m, g + m, b + m
 end
 
 function Menu:draw(screenWidth, screenHeight, state)
-    -- Draw animated title
-    love.graphics.setColor(0.3, 0.8, 1.0)
+    -- Fancy animated title
+    local r, g, b = hsvToRgb(self.title.hue, 0.8, 1.0)
     love.graphics.setFont(self.largeFont)
-
     love.graphics.push()
     love.graphics.translate(screenWidth / 2, screenHeight / 4)
     love.graphics.scale(self.title.scale, self.title.scale)
+
+    -- Outer glow layers
+    for i = 3, 1, -1 do
+        local alpha = 0.1 * i
+        love.graphics.setColor(r, g, b, alpha)
+        love.graphics.printf(self.title.text, -screenWidth / 2, -self.largeFont:getHeight() / 2, screenWidth, "center")
+    end
+
+    -- Core bright text
+    love.graphics.setColor(r, g, b)
     love.graphics.printf(self.title.text, -screenWidth / 2, -self.largeFont:getHeight() / 2, screenWidth, "center")
+
+    -- Laser beam sweep
+    local beamWidth = 10
+    love.graphics.setColor(1, 1, 1, 0.15)
+    love.graphics.rectangle("fill", self.title.beamX - beamWidth / 2, -self.largeFont:getHeight(), beamWidth,
+        self.largeFont:getHeight() * 2)
+
     love.graphics.pop()
 
     if state == "menu" then
@@ -199,8 +210,6 @@ function Menu:draw(screenWidth, screenHeight, state)
         love.graphics.setFont(self.smallFont)
         love.graphics.printf("Laser Reflection Puzzle Game",
             0, screenHeight / 3 + 30, screenWidth, "center")
-    elseif state == "options" then
-        self:drawOptionsMenu()
     elseif state == "level_select" then
         self:drawLevelSelect()
     end
@@ -212,20 +221,9 @@ function Menu:draw(screenWidth, screenHeight, state)
         "right")
 end
 
-function Menu:drawOptionsMenu()
-    love.graphics.setColor(1, 1, 1)
-    love.graphics.setFont(self.mediumFont)
-    love.graphics.printf("Options", 0, self.screenHeight / 4 - 40, self.screenWidth, "center")
-
-    for _, button in ipairs(self.optionsButtons) do
-        self:drawButton(button)
-    end
-end
-
 function Menu:drawLevelSelect()
     love.graphics.setColor(1, 1, 1)
     love.graphics.setFont(self.mediumFont)
-    love.graphics.printf("Select Level", 0, self.screenHeight / 6, self.screenWidth, "center")
 
     for _, button in ipairs(self.levelButtons) do
         self:drawButton(button)
@@ -233,7 +231,7 @@ function Menu:drawLevelSelect()
         if button.subtext then
             love.graphics.setColor(0.8, 0.9, 1.0, 0.8)
             love.graphics.setFont(self.smallFont)
-            love.graphics.printf(button.subtext, button.x, button.y + 35, button.width, "center")
+            love.graphics.printf(button.subtext, button.x, button.y + 37, button.width, "center")
         end
     end
 end
@@ -267,8 +265,6 @@ function Menu:handleClick(x, y, state)
 
     if state == "menu" then
         buttons = self.menuButtons
-    elseif state == "options" then
-        buttons = self.optionsButtons
     elseif state == "level_select" then
         buttons = self.levelButtons
     end
