@@ -5,6 +5,7 @@
 local ipairs = ipairs
 
 local math_floor = math.floor
+local math_min, math_max = math.min, math.max
 local table_insert = table.insert
 local table_remove = table.remove
 
@@ -94,6 +95,9 @@ function LevelEditor.new()
     instance.levelName = "Custom Level"
     instance.filename = "custom_level.lua"
 
+    instance.lastMessage = ""
+    instance.messageTimer = 0
+
     instance.availableTileTypes = { "empty", "straight", "corner", "t_junction", "cross", "source", "target" }
 
     instance:initializeGrid()
@@ -169,7 +173,13 @@ function LevelEditor:resizeGrid(newWidth, newHeight)
 end
 
 function LevelEditor:update(dt)
-    -- Update any animations or effects if needed
+    if self.messageTimer > 0 then
+        self.messageTimer = self.messageTimer - dt
+        if self.messageTimer <= 0 then
+            self.lastMessage = ""
+            self.messageTimer = 0
+        end
+    end
 end
 
 function LevelEditor:draw()
@@ -367,6 +377,11 @@ function LevelEditor:drawUI()
         0, self.screenHeight - 55, self.screenWidth, "center")
     printf("1-7: Select Tile Types | B: Cycle Bulb Types (for Target)",
         0, self.screenHeight - 80, self.screenWidth, "center")
+
+    if self.lastMessage ~= "" then
+        setColor(1, 1, 0, 1) -- yellow text
+        print(self.lastMessage, 5, self.screenHeight / 1.3)
+    end
 end
 
 function LevelEditor:drawToolPalette()
@@ -524,11 +539,13 @@ function LevelEditor:handleKeyPress(key)
     elseif key == "b" and self.currentTool == "target" then
         self.currentBulbType = (self.currentBulbType % 4) + 1
     elseif key == "=" or key == "+" then
-        self:resizeGrid(self.gridWidth + 1, self.gridHeight + 1)
+        local newWidth = math_min(self.gridWidth + 1, 14)
+        local newHeight = math_min(self.gridHeight + 1, 14)
+        self:resizeGrid(newWidth, newHeight)
     elseif key == "-" then
-        if self.gridWidth > 3 and self.gridHeight > 3 then
-            self:resizeGrid(self.gridWidth - 1, self.gridHeight - 1)
-        end
+        local newWidth = math_max(self.gridWidth - 1, 3)
+        local newHeight = math_max(self.gridHeight - 1, 3)
+        self:resizeGrid(newWidth, newHeight)
     elseif key == "s" then
         self:saveLevel()
     elseif key == "l" then
@@ -567,14 +584,83 @@ function LevelEditor:saveLevel()
     -- Convert to Lua code
     local luaCode = self:levelToLua(levelData)
 
-    -- Save to file
-    local writeSuccess, message = love.filesystem.write("assets/levels/" .. self.filename, luaCode)
+    -- Save to file - use Love2D's save directory
+    local success, message = love.filesystem.write(self.filename, luaCode)
 
-    if writeSuccess then
-        print("Level saved successfully as: assets/levels/" .. self.filename)
+    if success then
+        local saveDir = love.filesystem.getSaveDirectory()
+        self.lastMessage = "File saved to: " .. saveDir .. "/" .. self.filename
     else
-        print("Error saving level: " .. tostring(message))
+        self.lastMessage = "Error saving level: " .. tostring(message)
+        print("Save error details: ", message)
     end
+    self.messageTimer = 3
+end
+
+function LevelEditor:loadLevel()
+    -- Load from Love2D's save directory
+    if not love.filesystem.getInfo(self.filename) then
+        self.lastMessage = "Level file not found: " .. self.filename
+        self.messageTimer = 3
+        return
+    end
+
+    local contents, size = love.filesystem.read(self.filename)
+    if not contents then
+        self.lastMessage = "Error reading level: " .. self.filename
+        self.messageTimer = 3
+        return
+    end
+
+    -- Safely compile the string
+    local chunk, compileError = loadstring(contents)
+    if not chunk then
+        self.lastMessage = "Error compiling level: " .. compileError
+        self.messageTimer = 3
+        return
+    end
+
+    -- Safely execute the compiled function
+    local success, levelData = pcall(chunk)
+    if not success then
+        self.lastMessage = "Error executing level: " .. levelData
+        self.messageTimer = 3
+        return
+    end
+
+    if type(levelData) ~= "table" then
+        self.lastMessage = "Invalid level format in: " .. self.filename
+        self.messageTimer = 3
+        return
+    end
+
+    -- Resize grid to match saved level
+    local gridH = #levelData.grid
+    local gridW = #levelData.grid[1] or 5
+    self:resizeGrid(gridW, gridH)
+
+    -- Apply tiles
+    local rotationIndex = 1
+    local bulbIndex = 1
+    for y = 0, gridH - 1 do
+        for x = 0, gridW - 1 do
+            local tileType = levelData.grid[y + 1][x + 1]
+            local tile = self.tiles[y][x]
+            tile.type = tileType
+            tile.rotation = levelData.rotations[rotationIndex] or 0
+
+            if tileType == "target" then
+                tile.bulbType = levelData.bulbTypes[bulbIndex] or 1
+                bulbIndex = bulbIndex + 1
+            end
+
+            rotationIndex = rotationIndex + 1
+        end
+    end
+
+    self.levelName = levelData.name or "Custom Level"
+    self.lastMessage = "Level loaded: " .. self.filename
+    self.messageTimer = 3
 end
 
 function LevelEditor:levelToLua(levelData)
@@ -622,10 +708,6 @@ function LevelEditor:levelToLua(levelData)
 
     lua = lua .. "}"
     return lua
-end
-
-function LevelEditor:loadLevel()
-    -- TODO: Implement level loading
 end
 
 function LevelEditor:setFonts(fonts)
