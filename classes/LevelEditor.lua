@@ -23,56 +23,10 @@ local PALETTE_Y = 60
 local BUTTON_SIZE = 40
 local BUTTON_SPACING = 10
 
-local toolMap = {
-    ["1"] = "empty",
-    ["2"] = "straight",
-    ["3"] = "corner",
-    ["4"] = "t_junction",
-    ["5"] = "cross",
-    ["6"] = "source",
-    ["7"] = "target",
-}
-
-local CONNECTIONS = {
-    straight = {
-        [0] = { "up", "down" },
-        [1] = { "left", "right" },
-        [2] = { "up", "down" },
-        [3] = { "left", "right" },
-    },
-    corner = {
-        [0] = { "up", "right" },
-        [1] = { "right", "down" },
-        [2] = { "down", "left" },
-        [3] = { "left", "up" },
-    },
-    t_junction = {
-        [0] = { "up", "right", "down" },
-        [1] = { "right", "down", "left" },
-        [2] = { "down", "left", "up" },
-        [3] = { "left", "up", "right" },
-    },
-    cross = { [0] = { "up", "right", "down", "left" } },
-    source = {
-        [0] = { "right" },
-        [1] = { "down" },
-        [2] = { "left" },
-        [3] = { "up" },
-    },
-    target = { [0] = { "up", "right", "down", "left" } }
-}
-
-local BULB_COLORS = {
-    [1] = { 1.0, 0.9, 0.6 },
-    [2] = { 0.6, 0.8, 1.0 },
-    [3] = { 0.6, 1.0, 0.6 },
-    [4] = { 0.8, 0.6, 1.0 }
-}
-
 local LevelEditor = {}
 LevelEditor.__index = LevelEditor
 
-function LevelEditor.new()
+function LevelEditor.new(helpers)
     local instance = setmetatable({}, LevelEditor)
 
     instance.screenWidth = 1200
@@ -97,6 +51,8 @@ function LevelEditor.new()
 
     instance.lastMessage = ""
     instance.messageTimer = 0
+
+    instance.helpers = helpers
 
     instance.availableTileTypes = { "empty", "straight", "corner", "t_junction", "cross", "source", "target" }
 
@@ -301,7 +257,7 @@ function LevelEditor:drawTile(tile, gridX, gridY)
 end
 
 function LevelEditor:getConnections(tileType, rotation)
-    local t = CONNECTIONS[tileType]
+    local t = self.helpers.CONNECTIONS[tileType]
     if not t then return {} end
     return t[rotation % 4] or t[0] or {}
 end
@@ -347,7 +303,8 @@ function LevelEditor:drawLightBulb(x, y, bulbType)
     local centerY = y + self.gridSize / 2
     local bulbRadius = self.gridSize * 0.25
 
-    local color = BULB_COLORS[bulbType] or BULB_COLORS[1]
+    local colors = self.helpers.BULB_COLORS
+    local color = colors[bulbType] or colors[1]
     setColor(color[1], color[2], color[3], 0.8)
     circle("fill", centerX, centerY, bulbRadius)
 
@@ -530,12 +487,10 @@ function LevelEditor:checkToolPaletteClick(x, y)
 end
 
 function LevelEditor:handleKeyPress(key)
-    if toolMap[key] then
-        self.currentTool = toolMap[key]
+    if self.helpers.TOOL_MAP[key] then
+        self.currentTool = self.helpers.TOOL_MAP[key]
         self.currentRotation = 0
-        if key == "7" then
-            self.currentBulbType = 1
-        end
+        if key == "7" then self.currentBulbType = 1 end
     elseif key == "b" and self.currentTool == "target" then
         self.currentBulbType = (self.currentBulbType % 4) + 1
     elseif key == "=" or key == "+" then
@@ -550,6 +505,49 @@ function LevelEditor:handleKeyPress(key)
         self:saveLevel()
     elseif key == "l" then
         self:loadLevel()
+    elseif key == "r" then
+        self:resetCurrentTile()
+    end
+end
+
+function LevelEditor:resetCurrentTile()
+    local x, y = love.mouse.getPosition()
+
+    -- Convert screen coordinates to grid coordinates
+    local gridX = math_floor((x - self.boardOffsetX) / self.gridSize)
+    local gridY = math_floor((y - self.boardOffsetY) / self.gridSize)
+
+    if gridX >= 0 and gridX < self.gridWidth and
+        gridY >= 0 and gridY < self.gridHeight then
+        local tile = self.tiles[gridY][gridX]
+
+        -- Remove from sources/targets if it was one
+        if tile.type == "source" then
+            for i, source in ipairs(self.sources) do
+                if source.x == gridX and source.y == gridY then
+                    table_remove(self.sources, i)
+                    break
+                end
+            end
+        elseif tile.type == "target" then
+            for i, target in ipairs(self.targets) do
+                if target.x == gridX and target.y == gridY then
+                    table_remove(self.targets, i)
+                    break
+                end
+            end
+        end
+
+        -- Reset tile to empty
+        tile.type = "empty"
+        tile.rotation = 0
+        tile.bulbType = 1
+
+        self.lastMessage = "Tile reset at " .. gridX .. "," .. gridY
+        self.messageTimer = 2
+    else
+        self.lastMessage = "Click on a tile first, then press R to reset"
+        self.messageTimer = 2
     end
 end
 
@@ -582,7 +580,7 @@ function LevelEditor:saveLevel()
     }
 
     -- Convert to Lua code
-    local luaCode = self:levelToLua(levelData)
+    local luaCode = self.helpers.levelToLua(levelData)
 
     -- Save to file - use Love2D's save directory
     local success, message = love.filesystem.write(self.filename, luaCode)
@@ -661,53 +659,6 @@ function LevelEditor:loadLevel()
     self.levelName = levelData.name or "Custom Level"
     self.lastMessage = "Level loaded: " .. self.filename
     self.messageTimer = 3
-end
-
-function LevelEditor:levelToLua(levelData)
-    local lua = "return {\n"
-
-    -- Name
-    lua = lua .. "    name = \"" .. levelData.name .. "\",\n"
-
-    -- Grid
-    lua = lua .. "    grid = {\n"
-    for y, row in ipairs(levelData.grid) do
-        lua = lua .. "        { "
-        for x, tileType in ipairs(row) do
-            lua = lua .. "\"" .. tileType .. "\""
-            if x < #row then lua = lua .. ", " end
-        end
-        lua = lua .. " }"
-        if y < #levelData.grid then lua = lua .. ",\n" else lua = lua .. "\n" end
-    end
-    lua = lua .. "    },\n"
-
-    -- Rotations
-    local columns = #levelData.grid[1] -- Get the number of columns from the first row
-    lua = lua .. "    rotations = {\n        "
-    for i, rotation in ipairs(levelData.rotations) do
-        lua = lua .. rotation
-        if i < #levelData.rotations then lua = lua .. ", " end
-        if i % columns == 0 and i < #levelData.rotations then
-            lua = lua .. "\n        "
-        end
-    end
-    lua = lua .. "\n    },\n"
-
-    -- Bulb types
-    if #levelData.bulbTypes > 0 then
-        lua = lua .. "    bulbTypes = { "
-        for i, bulbType in ipairs(levelData.bulbTypes) do
-            lua = lua .. bulbType
-            if i < #levelData.bulbTypes then lua = lua .. ", " end
-        end
-        lua = lua .. " }\n"
-    else
-        lua = lua .. "    bulbTypes = { 1 }\n"
-    end
-
-    lua = lua .. "}"
-    return lua
 end
 
 function LevelEditor:setFonts(fonts)

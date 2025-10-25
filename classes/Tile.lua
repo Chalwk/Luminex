@@ -2,58 +2,6 @@
 -- License: MIT
 -- Copyright (c) 2025 Jericho Crosby (Chalwk)
 
-local BULB_COLORS = {
-    [1] = {
-        bulbColor = { 0.9, 0.9, 0.8, 0.3 },
-        glowColor = { 1.0, 0.9, 0.6 },
-        filamentColor = { 1.0, 0.8, 0.3 }
-    },
-    [2] = {
-        bulbColor = { 0.7, 0.8, 1.0, 0.3 },
-        glowColor = { 0.6, 0.8, 1.0 },
-        filamentColor = { 0.8, 0.9, 1.0 }
-    },
-    [3] = {
-        bulbColor = { 0.8, 1.0, 0.8, 0.3 },
-        glowColor = { 0.6, 1.0, 0.6 },
-        filamentColor = { 0.9, 1.0, 0.7 }
-    },
-    [4] = {
-        bulbColor = { 0.9, 0.7, 1.0, 0.3 },
-        glowColor = { 0.8, 0.6, 1.0 },
-        filamentColor = { 1.0, 0.8, 1.0 }
-    }
-}
-
-local CONNECTIONS = {
-    straight = {
-        [0] = { "up", "down" },
-        [1] = { "left", "right" },
-        [2] = { "up", "down" },
-        [3] = { "left", "right" },
-    },
-    corner = {
-        [0] = { "up", "right" },
-        [1] = { "right", "down" },
-        [2] = { "down", "left" },
-        [3] = { "left", "up" },
-    },
-    t_junction = {
-        [0] = { "up", "right", "down" },
-        [1] = { "right", "down", "left" },
-        [2] = { "down", "left", "up" },
-        [3] = { "left", "up", "right" },
-    },
-    cross = { [0] = { "up", "right", "down", "left" } },
-    source = {
-        [0] = { "right" },
-        [1] = { "down" },
-        [2] = { "left" },
-        [3] = { "up" },
-    },
-    target = { [0] = { "up", "right", "down", "left" } }
-}
-
 local ipairs = ipairs
 
 local line = love.graphics.line
@@ -65,15 +13,16 @@ local setLineWidth = love.graphics.setLineWidth
 local Tile = {}
 Tile.__index = Tile
 
-function Tile.new(x, y, tileType, rotation, bulbType)
+function Tile.new(x, y, tileType, rotation, bulbType, helpers)
     local instance = setmetatable({}, Tile)
 
     instance.x = x
     instance.y = y
     instance.type = tileType or "empty"
-    instance.rotation = rotation or 0 -- 0, 1, 2, 3 for 0°, 90°, 180°, 270°
+    instance.rotation = rotation or 0
     instance.powered = false
     instance.bulbType = bulbType or 1
+    instance.helpers = helpers
 
     return instance
 end
@@ -92,7 +41,7 @@ function Tile:rotate(clockwise)
 end
 
 function Tile:getConnections()
-    local t = CONNECTIONS[self.type]
+    local t = self.helpers.CONNECTIONS[self.type]
     if not t then return {} end
     return t[self.rotation % 4] or t[0] or {}
 end
@@ -180,7 +129,7 @@ function Tile:drawLightBulb(x, y, gridSize, isPowered)
     local baseWidth = gridSize * 0.3
     local baseHeight = gridSize * 0.15
 
-    local bulb_type = BULB_COLORS[self.bulbType]
+    local bulb_type = self.helpers.BULB_COLORS[self.bulbType]
     local bulbColor, glowColor, filamentColor = bulb_type.bulbColor, bulb_type.glowColor, bulb_type.filamentColor
 
     -- Metal base/socket

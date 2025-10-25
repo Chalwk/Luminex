@@ -24,7 +24,7 @@ local SoundManager = require("classes/SoundManager")
 local Game = {}
 Game.__index = Game
 
-function Game.new()
+function Game.new(helpers)
     local instance = setmetatable({}, Game)
 
     instance.screenWidth = 1200
@@ -42,6 +42,8 @@ function Game.new()
     instance.effects = {}
 
     instance.sounds = SoundManager.new()
+
+    instance.helpers = helpers
 
     return instance
 end
@@ -66,7 +68,7 @@ end
 
 function Game:loadLevel(levelNumber)
     self.currentLevel = levelNumber
-    self.levelManager = LevelManager.new(self.gridSize)
+    self.levelManager = LevelManager.new(self.gridSize, self.helpers)
     self.levelManager:loadLevel(levelNumber)
     self.levelComplete = false
     self.moves = 0

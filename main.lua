@@ -22,6 +22,8 @@ function love.load()
     love.graphics.setDefaultFilter("nearest", "nearest")
     love.graphics.setLineStyle("smooth")
 
+    local helpers = require("classes/Helpers")
+
     -- Load fonts
     fonts.small = love.graphics.newFont(16)
     fonts.medium = love.graphics.newFont(22)
@@ -30,10 +32,10 @@ function love.load()
 
     love.graphics.setFont(fonts.medium)
 
-    game = Game.new()
+    game = Game.new(helpers)
     menu = Menu.new()
     backgroundManager = BackgroundManager.new()
-    levelEditor = LevelEditor.new()
+    levelEditor = LevelEditor.new(helpers)
 
     menu:setFonts(fonts)
     game:setFonts(fonts)

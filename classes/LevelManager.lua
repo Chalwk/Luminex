@@ -5,19 +5,13 @@
 local ipairs = ipairs
 local table_insert = table.insert
 
-local opposites = {
-    up = "down",
-    down = "up",
-    left = "right",
-    right = "left"
-}
-
 local LevelManager = {}
 LevelManager.__index = LevelManager
 
-function LevelManager.new(gridSize)
+function LevelManager.new(gridSize, helpers)
     local instance = setmetatable({}, LevelManager)
     instance.gridSize = gridSize
+    instance.helpers = helpers
     instance.levels = {}
     instance:initLevels()
     return instance
@@ -297,7 +291,7 @@ function LevelManager:loadLevel(levelNumber)
                 targetIndex = targetIndex + 1
             end
 
-            local tile = require("classes/Tile").new(x - 1, y - 1, tileType, rotation, bulbType)
+            local tile = require("classes/Tile").new(x - 1, y - 1, tileType, rotation, bulbType, self.helpers)
             self.tiles[y][x] = tile
 
             if tileType == "source" then
@@ -400,7 +394,7 @@ function LevelManager:isLevelComplete()
 end
 
 function LevelManager:getOppositeDirection(dir)
-    return opposites[dir]
+    return self.helpers.OPPOSITES[dir]
 end
 
 function LevelManager:getTargets()
